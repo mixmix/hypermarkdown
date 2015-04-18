@@ -37,7 +37,7 @@ function make_raw( url ) {
 }
 
 function find_transculsion_links(text) {
-  var link_pattern_matches = text.match(/i\[[\w\s]*\]\([^\)]+\)/g)
+  var link_pattern_matches = text.match(/\+\[[\w\s]*\]\([^\)]+\)/g)
     
   if (link_pattern_matches) {
     return link_pattern_matches.map(strip_to_link) 
@@ -55,7 +55,7 @@ function strip_to_link(string) {
 }
 
 function substitute(link, imported_text, whole_text) {
-  var regex = new RegExp('i\\[.*\\]\\(' + link + '\\)', 'g')
+  var regex = new RegExp('\\+\\[.*\\]\\(' + link + '\\)', 'g')
   return whole_text.replace(regex, imported_text)
 }
 
