@@ -11,6 +11,8 @@ parts of the project:
 
 To include a MD file within your MD file, use the normal markdown-link syntax, prefixed with an 'i'
 
-e.g.  i[example include](https://github.com/loomio/loomio/raw/master/README.md)
-
+e.g.  
+```
++[example include](https://github.com/mixmix/example-course/blob/master/README.md)
+```
 
