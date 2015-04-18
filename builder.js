@@ -1,15 +1,13 @@
 var async = require('async')
 var request = require('request');
+var Markdown = require('markdown-it')
 
-module.exports = build 
+var md = new Markdown()
 
-
-function build( text, callback ) { 
+module.exports = function build( text, callback ) { 
   var links = find_transculsion_links(text)
   if (links == null) { 
-    console.log('here')
-    //console.log(text)
-    return callback(null, text)
+    return callback(null, md.render(text))
   }
 
   async.each( links, 
@@ -17,7 +15,7 @@ function build( text, callback ) {
                 request.get(link, function(err, response, body) {
                   if (err) throw_err("there was an error getting: " + link)
 
-                  console.log("Get: "+ link)
+                  console.log(" [Get] "+ link)
                   text = substitute(link, body, text)
 
                   throw_err()
@@ -25,8 +23,8 @@ function build( text, callback ) {
               },
               function recur(err) {
                 if (err) throw err
-                console.log('end of async doing each')
-                console.log(text)
+                console.log('DONE fetching')
+                //console.log(text)
 
                 build(text, callback)
               }

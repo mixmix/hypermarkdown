@@ -1,0 +1,8 @@
+#! /bin/bash
+echo "creating fresh build"
+rm -rf build
+mkdir build
+
+browserify source/client.js -o build/client.js
+
+echo "DONE"

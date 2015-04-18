@@ -4,7 +4,12 @@
   "description": "a markdown transcluder that accepts web addresses for .hmd / .md files",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "bin/build",
+    "start": "node server.js",
+    "go": "npm run build && npm start",
+    "deploy": "git push heroku master",
+    "prod": "NODE_ENV=production npm start"
   },
   "repository": {
     "type": "git",
@@ -18,7 +23,9 @@
   "homepage": "https://github.com/mixmix/hypermarkdown",
   "dependencies": {
     "async": "^0.9.0",
-    "http": "0.0.0",
+    "browserify": "^9.0.8",
+    "domquery": "^1.2.0",
+    "markdown-it": "^4.1.1",
     "request": "^2.55.0"
   }
 }

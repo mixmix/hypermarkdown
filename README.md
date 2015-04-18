@@ -1,14 +1,16 @@
 # hypermarkdown
-a markdown transculsion server- it adds includsion notation to the markdown format, allowing you to weave markdown files together
+
+This is a dynamic mardkown transclusion server - it parses special inclusion syntax and includes remote markdown, then renderes the resulting markdown.
 
 parts of the project: 
 
-- an hmd builder, which fetches md / hmd file from the web translcuding them
-- a server which you can point at a hmd file and then renderes a page with the translcuded md
+- builder.js, which accepts text, and a callback. It fetches md / hmd file from the web translcuding then hands the result to the callback
+- a server which you can point at an hmd file. It uses the builder to transclude and then render the markdown
 
 ## notation
 
-i[example include](https://github.com/loomio/loomio/raw/master/README.md)
+To include a MD file within your MD file, use the normal markdown-link syntax, prefixed with an 'i'
 
-see this README.md rendered with hypermarkdown [here](https://github.com/mixmix/hypermarkdown/raw/master/README.md)
+e.g.  i[example include](https://github.com/loomio/loomio/raw/master/README.md)
+
 
