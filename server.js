@@ -25,7 +25,7 @@ function handler(req, res) {
     fs.createReadStream('./loading.gif').pipe(res)
   }
   else if (req.url.match(/api\/render\/.*\.h?md/)) {
-    var target = fix_url(req.url)
+    var target = make_raw(req.url)
 
     request.get( target, function(err, response, body) {
       build(body, function(err, rendered_hypermarkdown) {
@@ -47,7 +47,7 @@ function handler(req, res) {
 
 }
 
-function fix_url( url ) {
+function make_raw( url ) {
   return 'https://github.com/' + url.replace(/.*api\/render\//, '').replace(/\/blob\//, '/raw/')
 }
 

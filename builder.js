@@ -12,7 +12,8 @@ module.exports = function build( text, callback ) {
 
   async.each( links, 
               function get_md( link, throw_err ) { 
-                request.get(link, function(err, response, body) {
+                var raw_url = make_raw(link)
+                request.get(raw_url, function(err, response, body) {
                   if (err) throw_err("there was an error getting: " + link)
 
                   console.log(" [Get] "+ link)
@@ -31,6 +32,9 @@ module.exports = function build( text, callback ) {
   )
 }
 
+function make_raw( url ) {
+  return url.replace(/.*api\/render\//, 'https://github.com/').replace(/\/blob\//, '/raw/')
+}
 
 function find_transculsion_links(text) {
   var link_pattern_matches = text.match(/i\[[\w\s]*\]\([^\)]+\)/g)
