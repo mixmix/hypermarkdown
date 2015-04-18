@@ -2,16 +2,31 @@
 <html>
   <head>
     <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,700,600" rel="stylesheet" type="text/css">
-    <script src='/app.js'></script>
     <link href='/styles.css' rel='stylesheet' />
   </head>
 
   <body>
     <main>
       <a class='source-link' href='https://github.com/mixmix/hypermarkdown'>source</a>
-      <h1>hypermarkdown</h1>
-      <div id='dump' ></div>
-    </mian>
+      <div class='container'>
+        <h1>hypermarkdown</h1>
+      </div>
+      <div class='container target'>
+        <div id='loading' >
+          <img src='/loading.gif' />
+          <p>Loading...</p>
+        </div>
+        <div id='how-to' class='hide'> 
+          Render a hypermarkdown (or markdown) file on github. <br />For version 0.0.1, append the path to the file to this url. <br />
+           <p>
+             e.g. <br />
+             <em>www.github.com/</em>loomio/loomio/blob/master/lineman/README.md<br />
+             <em>hypermarkdown.herokuapp.com/</em>loomio/loomio/blob/master/lineman/README.md
+           </p>
+        </div>
+      </div>
+    </main>
   </body>
 
+  <script src='/app.js'></script>
 </html>

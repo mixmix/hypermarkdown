@@ -21,8 +21,11 @@ function handler(req, res) {
   else if (req.url === '/styles.css') {
     fs.createReadStream('./styles.css').pipe(res)
   }
+  else if (req.url === '/loading.gif') {
+    fs.createReadStream('./loading.gif').pipe(res)
+  }
   else if (req.url.match(/api\/render\/.*\.h?md/)) {
-    var target = 'https://github.com/' + req.url.replace(/.*api\/render\//, '')
+    var target = fix_url(req.url)
 
     request.get( target, function(err, response, body) {
       build(body, function(err, rendered_hypermarkdown) {
@@ -37,12 +40,16 @@ function handler(req, res) {
   else {
     res.writeHead(200, {'content-type': 'text/html'})
     fs.createReadStream('./index.html').pipe(res)
+
     //res.writeHead(404)
     //res.end()
   }
 
 }
 
+function fix_url( url ) {
+  return 'https://github.com/' + url.replace(/.*api\/render\//, '').replace(/\/blob\//, '/raw/')
+}
 
 function startServer() {
   var port = process.env.PORT || 5000

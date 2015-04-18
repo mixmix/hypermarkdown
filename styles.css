@@ -1,23 +1,16 @@
-body, h1, h2 {
-  text-align: center;
-  font-family: "OpenSans-Light","OpenSans",sans-serif;
-  font-weight: 300;
+body {
   color: #37362F;
+  background: rgb(243, 243, 243);
+}
+
+h1, .source-link, #loading, #how-to {
+  font-family: "opensans-light","opensans",sans-serif;
+  font-weight: 300;
 }
 
 h1 { 
   font-size: 50px;
-  padding: 30px 0 20px;
-}
-
-img {
-  width: 300px;
-}
-
-.contributors { 
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  padding: 40px 0 10px;
 }
 
 .source-link {
@@ -26,6 +19,44 @@ img {
   right: 10px;
 }
 
+#loading {
+  text-align: center;
+  padding: 100px;
+}
+#loading p {
+  padding-left: 16px;
+}
+
+#how-to {
+  padding-top: 40px;
+}
+#how-to p {
+  text-align: right; 
+}
+
+main {
+  width: 1000px;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: left;
+}
+
+.container {
+  background: #ffffff;
+  padding: 0 20px;
+  margin: 0 20px;
+}
+
+
+.container.target {
+  min-height: 1000px;
+  margin-bottom: 30px;
+  padding-bottom: 60px;
+}
+
+.hide { 
+  display: none;
+}
 /*github markdown style, source: https://github.com/sindresorhus/github-markdown-css/blob/gh-pages/github-markdown.css*/
 
 @font-face {
