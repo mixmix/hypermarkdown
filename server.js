@@ -34,13 +34,11 @@ function handler(req, res) {
     //this pattern assumes you're mirroring a github repo/project location
     var target = make_raw(req.url)
 
-    request.get( target, function(err, response, body) {
-      build(body, function(err, rendered_hypermarkdown) {
-        res.writeHead(200, {'content-type': 'application/json'})
+    build(target, function(err, rendered_hypermarkdown) {
+      res.writeHead(200, {'content-type': 'application/json'})
 
-        res.write(JSON.stringify({body: rendered_hypermarkdown}, null, 2))
-        res.end()
-      })
+      res.write(JSON.stringify({body: rendered_hypermarkdown}, null, 2))
+      res.end()
     })
   }
   else {
