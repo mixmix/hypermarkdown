@@ -5,8 +5,9 @@ var Markdown = require('markdown-it')
 var md = new Markdown()
 
 module.exports = function( url, callback ) {
+  console.log(green('[Get] ') + url)
+
   request.get( url, function(err, response, body) {
-    console.log(green('[Get] ') + url)
     build(body, callback)
   })
 }
@@ -14,16 +15,18 @@ module.exports = function( url, callback ) {
 function build( text, callback, indent ) { 
   var urls = find_transculsion_urls(text)
   if (urls == null) { 
+    text = stringHyperMarkdownBadge(text)
     return callback(null, md.render(text))
   }
 
   indent = (indent || '') + '  '
   async.each( urls, 
               function get_md( url, throw_err ) { 
+                console.log(green('[Get] ') + indent + url)
+
                 request.get(githubify(url), function(err, response, body) {
                   if (err) throw_err("there was an error getting: " + url)
 
-                  console.log(green('[Get] ') + indent + url)
                   text = substitute(url, body, text)
 
                   throw_err()
@@ -51,6 +54,10 @@ function find_transculsion_urls(text) {
   } else {
     return null
   }
+}
+
+function stringHyperMarkdownBadge(text) {
+  return text.replace('[![](https://github.com/mixmix/hypermarkdown/raw/master/hypermarkdown_badge.png)](https://hypermarkdown.herokuapp.com)', '')
 }
 
 function throw_err(err) {
