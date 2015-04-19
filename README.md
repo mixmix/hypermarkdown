@@ -9,7 +9,7 @@ parts of the project:
 
 ## notation
 
-To include a MD file within your MD file, use the normal markdown-link syntax, prefixed with an 'i'
+To include a MD file within your MD file, use the normal markdown-link syntax, prefixed with a '+'
 
 e.g.  
 ```
