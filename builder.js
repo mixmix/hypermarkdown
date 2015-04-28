@@ -4,16 +4,79 @@ var Markdown = require('markdown-it')
 
 var md = new Markdown()
 
-module.exports = function( url, callback ) {
-  console.log(green('[Get] ') + url)
+//module.exports = function( url, callback ) {
+  //console.log(green('[Get] ') + url)
 
-  request.get( url, function(err, response, body) {
-    build(body, callback)
+  //request.get( url, function(err, response, body) {
+    //build(body, callback)
+  //})
+//}
+
+module.exports = function( url, callback ) {
+  var parentTree = Tree(url)
+
+  dig( parentTree, callback )
+}
+
+if (!module.parent) {
+  var url = 'http://github.com/mixmix/example-course/blob/master/mix-recipe.md'
+
+  module.exports(url, function (err, results) {
+    if (err) { throw err }
+    console.log(results)
   })
 }
 
+function Tree(url) { 
+  return {
+    source:   url,
+    content:  null,
+    children: null,
+  }
+}
+
+function dig( treeNode, callback ) {
+  if (isInfiniteLoop(treeNode)) return callback(null, treeNode)
+
+  console.log(green('[Get] ') + treeNode.source)
+  request.get( githubify(treeNode.source), function(err, response, body) {
+    if (err) {
+      console.error("there was an error getting: " + url)
+      return callback(err)
+    }
+
+    treeNode.content = body
+    treeNode.children = find_transclusion_urls(body).map( Tree )
+    // TODO move into Tree()
+    treeNode.children.forEach(function (childTree) {
+      childTree.parent = treeNode
+    })
+
+    async.each( 
+      treeNode.children,
+      dig,
+      function (err) {
+        callback(err, treeNode)
+      }
+    )
+  })
+}
+
+function isInfiniteLoop( tree, url ) {
+  if (url == null) {
+    return isInfiniteLoop( tree.parent, tree.source )
+  }
+
+  if (tree.parent == null) return false
+  if (tree.source === url) return true
+
+  return isInfiniteLoop ( tree.parent, url )
+}
+
+////////////////////
+
 function build( text, callback, indent ) { 
-  var urls = find_transculsion_urls(text)
+  var urls = find_transclusion_urls(text)
   if (urls == null) { 
     text = stringHyperMarkdownBadge(text)
     return callback(null, md.render(text))
@@ -46,13 +109,13 @@ function githubify( url ) {
   return url.replace(/.*api\/render\//, 'https://github.com/').replace(/\/blob\//, '/raw/')
 }
 
-function find_transculsion_urls(text) {
+function find_transclusion_urls(text) {
   var link_pattern_matches = text.match(/\+\[[\w\s]*\]\([^\)]+\)/g)
     
   if (link_pattern_matches) {
     return link_pattern_matches.map(strip_to_url) 
   } else {
-    return null
+    return []
   }
 }
 
