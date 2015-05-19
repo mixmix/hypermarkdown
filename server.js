@@ -2,7 +2,7 @@ var isProd = process.env.NODE_ENV === 'production'
 var http = require('http')
 var fs = require('fs')
 var request = require('request')
-var stringify = require('safe-json-stringify') 
+var stringify = require('json-stringify-safe') 
 
 var build = require('./builder')
 var renderTree = require('./renderTree')

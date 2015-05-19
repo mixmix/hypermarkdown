@@ -2073,8 +2073,8 @@ if (current_path == '/') {
         "Content-Type": "application/json"
     }
   }, function (err, resp, body) {
+    console.log(body)
     var results = JSON.parse(body)
-    console.log(results)
 
     var fullRenderedMarkdown = treeToHtml(results)
     dom('body main .container.target').replace('#loading', "<div class='markdown-body'>{body}</div>", {body: fullRenderedMarkdown} )
