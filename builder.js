@@ -4,14 +4,6 @@ var Markdown = require('markdown-it')
 
 var md = new Markdown()
 
-//module.exports = function( url, callback ) {
-  //console.log(green('[Get] ') + url)
-
-  //request.get( url, function(err, response, body) {
-    //build(body, callback)
-  //})
-//}
-
 module.exports = function( url, callback ) {
   var parentTree = Tree(url)
 
@@ -23,12 +15,15 @@ if (!module.parent) {
 
   module.exports(url, function (err, results) {
     if (err) { throw err }
-    console.log(results)
+    var renderedTree = renderTreeContent(results)
+    console.log(renderedTree)
+    console.log(treeToHtml(renderedTree))
   })
 }
 
 function Tree(url) { 
   return {
+    parent:   null,
     source:   url,
     content:  null,
     children: null,
@@ -62,45 +57,35 @@ function dig( treeNode, callback ) {
   })
 }
 
+function treeToHtml ( tree ) {
+  var html = html || ''
+  if (tree.parent == null) html = tree.content
+
+  tree.children.forEach( function(childTree) {
+    html = substitute( childTree.source, childTree.content, html )
+    treeToHtml( childTree ) 
+  })
+
+  return html
+}
+
+function renderTreeContent( tree ) {
+  tree.content = md.render(tree.content)
+  tree.children.forEach(function (childTree) {
+    renderTreeContent(childTree)
+  })
+  return tree
+}
+
 function isInfiniteLoop( tree, url ) {
+  if (tree.parent == null) return false
   if (url == null) {
     return isInfiniteLoop( tree.parent, tree.source )
   }
 
-  if (tree.parent == null) return false
   if (tree.source === url) return true
 
   return isInfiniteLoop ( tree.parent, url )
-}
-
-////////////////////
-
-function build( text, callback, indent ) { 
-  var urls = find_transclusion_urls(text)
-  if (urls == null) { 
-    text = stringHyperMarkdownBadge(text)
-    return callback(null, md.render(text))
-  }
-
-  indent = (indent || '') + '  '
-  async.each( urls, 
-              function get_md( url, throw_err ) { 
-                console.log(green('[Get] ') + indent + url)
-
-                request.get(githubify(url), function(err, response, body) {
-                  if (err) throw_err("there was an error getting: " + url)
-
-                  text = substitute(url, body, text)
-
-                  throw_err()
-                })
-              },
-              function recur(err) {
-                if (err) throw err
-
-                build(text, callback, indent)
-              }
-  )
 }
 
 function green(string) { return ("\033[32m"+ string +"\033[0m") }
@@ -119,12 +104,8 @@ function find_transclusion_urls(text) {
   }
 }
 
-function stringHyperMarkdownBadge(text) {
+function stripHyperMarkdownBadge(text) {
   return text.replace('[![](https://github.com/mixmix/hypermarkdown/raw/master/hypermarkdown_badge.png)](https://hypermarkdown.herokuapp.com)', '')
-}
-
-function throw_err(err) {
-  if (err) throw err
 }
 
 function strip_to_url(string) {
@@ -132,7 +113,8 @@ function strip_to_url(string) {
 }
 
 function substitute(url, imported_text, whole_text) {
-  var regex = new RegExp('\\+\\[.*\\]\\(' + url + '\\)', 'g')
+  //var regex = new RegExp('\\+\\[.*\\]\\(' + url + '\\)', 'g')
+  var regex = new RegExp('\\+\<a href\=(\'|\")' + url + '.*\<\/a\>', 'g')
   return whole_text.replace(regex, imported_text)
 }
 
