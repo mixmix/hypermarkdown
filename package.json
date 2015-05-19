@@ -26,6 +26,7 @@
     "browserify": "^9.0.8",
     "domquery": "^1.2.0",
     "markdown-it": "^4.1.1",
-    "request": "^2.55.0"
+    "request": "^2.55.0",
+    "safe-json-stringify": "^1.0.3"
   }
 }

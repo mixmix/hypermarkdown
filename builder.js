@@ -1,8 +1,6 @@
 var async = require('async')
 var request = require('request');
-var Markdown = require('markdown-it')
 
-var md = new Markdown()
 
 module.exports = function( url, callback ) {
   var parentTree = Tree(url)
@@ -57,26 +55,6 @@ function dig( treeNode, callback ) {
   })
 }
 
-function treeToHtml ( tree ) {
-  var html = html || ''
-  if (tree.parent == null) html = tree.content
-
-  tree.children.forEach( function(childTree) {
-    html = substitute( childTree.source, childTree.content, html )
-    treeToHtml( childTree ) 
-  })
-
-  return html
-}
-
-function renderTreeContent( tree ) {
-  tree.content = md.render(tree.content)
-  tree.children.forEach(function (childTree) {
-    renderTreeContent(childTree)
-  })
-  return tree
-}
-
 function isInfiniteLoop( tree, url ) {
   if (tree.parent == null) return false
   if (url == null) {
@@ -111,11 +89,4 @@ function stripHyperMarkdownBadge(text) {
 function strip_to_url(string) {
   return string.replace(/(.*\(|\).*)/g, '')
 }
-
-function substitute(url, imported_text, whole_text) {
-  //var regex = new RegExp('\\+\\[.*\\]\\(' + url + '\\)', 'g')
-  var regex = new RegExp('\\+\<a href\=(\'|\")' + url + '.*\<\/a\>', 'g')
-  return whole_text.replace(regex, imported_text)
-}
-
 
