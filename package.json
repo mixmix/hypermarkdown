@@ -27,6 +27,7 @@
     "domquery": "^1.2.0",
     "json-stringify-safe": "^5.0.1",
     "markdown-it": "^4.1.1",
-    "request": "^2.55.0"
+    "request": "^2.55.0",
+    "routes": "^2.0.0"
   }
 }

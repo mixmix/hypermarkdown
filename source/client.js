@@ -1,18 +1,15 @@
+var url = require('url')
 var xhr = require('xhr')
 var dom = require('domquery')
 
 var treeToHtml = require('../treeToHtml')
 
-var current_url = window.location.href
-var current_path = current_url.replace(/.*(herokuapp\.com|localhost\:\d*)/, '')
+var requestDetails = url.parse(window.location.href, true)
+var source = requestDetails.query.source
 
-if (current_path == '/') {
-  dom('#loading').style({'display': 'none'})
-  dom('#how-to').removeClass('hide')
-  //dom('body main .container.target').replace('#loading', '<div></div>')
-} else {
+if (source) {
   xhr({
-    uri: '/api/render?source=' + current_path,
+    uri: '/api/render?source=' + source,
     headers: {
         "Content-Type": "application/json"
     }
@@ -24,3 +21,10 @@ if (current_path == '/') {
     dom('body main .container.target').replace('#loading', "<div class='markdown-body'>{body}</div>", {body: fullRenderedMarkdown} )
   })
 }
+else {
+
+  dom('#loading').style({'display': 'none'})
+  dom('#how-to').removeClass('hide')
+  //dom('body main .container.target').replace('#loading', '<div></div>')
+}
+

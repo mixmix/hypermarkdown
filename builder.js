@@ -32,7 +32,7 @@ function dig( treeNode, callback ) {
   if (isInfiniteLoop(treeNode)) return callback(null, treeNode)
 
   console.log(green('[Get] ') + treeNode.source)
-  request.get( githubify(treeNode.source), function(err, response, body) {
+  request.get( make_raw(treeNode.source), function(err, response, body) {
     if (err) {
       console.error("there was an error getting: " + url)
       return callback(err)
@@ -68,9 +68,13 @@ function isInfiniteLoop( tree, url ) {
 
 function green(string) { return ("\033[32m"+ string +"\033[0m") }
 
-function githubify( url ) {
-  return url.replace(/.*api\/render\//, 'https://github.com/').replace(/\/blob\//, '/raw/')
+function make_raw( url ) {
+  if (url.match(/github\.com/)) {
+    url = url.replace(/\/blob\//, '/raw/')
+  }
+  return url
 }
+
 
 function find_transclusion_urls(text) {
   var link_pattern_matches = text.match(/\+\[[^\[\]]*\]\([^\)]+\)/g)
