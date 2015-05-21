@@ -18,7 +18,6 @@ function rootRequestResponse(req, res, match) {
   var referer = req.headers.referer || ''
   //linked from an md file?
   if (referer.match(/\.h?md(\#[-_\w]*)?/)) {
-    var redirect = 
     res.writeHead(302, {'Location': '/?source=' + referer, })
     res.end()
   } 
