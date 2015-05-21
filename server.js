@@ -11,7 +11,7 @@ var renderTree = require('./renderTree')
 // testing: tape
 
 function handler(req, res) {
-  if (req.url === '/') {
+  if (req.url === '/' || req.url === '') {
 
     var referer = req.headers.referer || ''
     if (referer.match(/github.*\.h?md/)) {
