@@ -18,7 +18,7 @@ function rootRequestResponse(req, res, match) {
   var referer = req.headers.referer || ''
   //linked from an md file?
   if (referer.match(/\.h?md(\#[-_\w]*)?/)) {
-    res.writeHead(302, {'Location': 'http://hypermarkdown.herokapp.com/?source=' + referer, })
+    res.writeHead(302, {'Location': 'http://hypermarkdown.herokuapp.com/?source=' + referer, })
     res.end()
   } 
   else {
