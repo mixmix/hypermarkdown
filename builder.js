@@ -73,7 +73,7 @@ function githubify( url ) {
 }
 
 function find_transclusion_urls(text) {
-  var link_pattern_matches = text.match(/\+\[[\w\s]*\]\([^\)]+\)/g)
+  var link_pattern_matches = text.match(/\+\[[^\[\]]*\]\([^\)]+\)/g)
     
   if (link_pattern_matches) {
     return link_pattern_matches.map(strip_to_url) 
