@@ -17,7 +17,7 @@ router.addRoute('/', rootRequestResponse)
 function rootRequestResponse(req, res, match) {
   var referer = req.headers.referer || ''
   //linked from an md file?
-  if (referer.match(/\.h?md(\#[-_\w]*)?/)) {
+  if (referer.match(mdRegex)) {
     res.writeHead(302, {'Location': 'http://hypermarkdown.herokuapp.com/?source=' + referer, })
     res.end()
   } 
@@ -32,7 +32,7 @@ function buildHypermarkdownTree(req, res, match) {
   var requestDetails = url.parse(req.url, true)
   var source = requestDetails.query.source
 
-  if (source) {
+  if (source && source.match(mdRegex) ) {
     var target = make_raw(source)
 
     build(target, function(err, tree) {
@@ -44,8 +44,8 @@ function buildHypermarkdownTree(req, res, match) {
     })
   }
   else {
-    res.writeHead(200, {'content-type': 'text/plain'})
-    res.write('use format /api/render?source=address_to_md_file')
+    res.writeHead(400, {'content-type': 'text/plain'})
+    res.write("You need to provide a link to a markdown file. <br />Check you're using the format <strong>/?source=address_to_file.md</strong> or <strong>/api/render/?source=address_to_file.md</strong> if you're using the API")
     res.end()
   }
 }
@@ -76,6 +76,8 @@ function make_raw( url ) {
   }
   return url
 }
+
+var mdRegex = new RegExp(/\.h?md(\#[-_\w]*)?/)
 
 
 function startServer() {
