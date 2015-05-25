@@ -36,6 +36,13 @@ function buildHypermarkdownTree(req, res, match) {
     var target = make_raw(source)
 
     build(target, function(err, tree) {
+      if (err) { 
+        res.writeHead(400, {'content-type': 'text/plain'})
+        res.write("You've hit a bad url somewhere in there, we got the error:<br />"+ err)
+        res.end()
+        return
+      }
+
       res.writeHead(200, {'content-type': 'application/json'})
 
       var renderedTree = renderTree(tree)
