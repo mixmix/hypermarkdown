@@ -55,9 +55,16 @@ main {
   padding-bottom: 60px;
 }
 
+.stitch-mark {
+  border: 1px lightgrey dashed;
+  padding: 10px;
+  background-color: rgba(0,255,255,0.08);
+}
+
 .hide { 
   display: none;
 }
+
 /*github markdown style, source: https://github.com/sindresorhus/github-markdown-css/blob/gh-pages/github-markdown.css*/
 
 @font-face {
