@@ -58,7 +58,7 @@ main {
 .stitch-mark {
   border: 1px lightgrey dashed;
   padding: 10px;
-  background-color: rgba(0,255,255,0.08);
+  background-color: rgba(52, 233, 213, 0.39);
 }
 
 .hide { 
