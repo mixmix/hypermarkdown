@@ -19,8 +19,8 @@ if (source) {
   }, renderResponse)
 }
 else {
-  dom('#loading').style({'display': 'none'})
-  dom('#how-to').removeClass('hide')
+  dom('#loading').addClass('hidden')
+  dom('#how-to').removeClass('hidden')
 }
 
 function renderResponse (err, resp, body) {
@@ -43,9 +43,18 @@ function renderResponse (err, resp, body) {
 }
 
 dom('.container.controls button.toggle-stitches').on('click', toggleStitches)
+dom('body').on('click', '.stitch-mark .collapser', toggleCollapse)
 
 function toggleStitches(evt) {
   dom('.container.controls button.toggle-stitches').toggleClass('active')
   dom('.stitch-mark').toggleClass('visible')
+
+  dom('.stitch-mark .collapser').toggleClass('hidden')
 } 
+
+function toggleCollapse(evt) {
+  var sectionHandle = evt.target.parentNode.attributes['data-url'].value
+
+  dom('.stitch-mark[data-url="'+sectionHandle+'"] .content').toggleClass('hidden')
+}
 

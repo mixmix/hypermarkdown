@@ -3474,8 +3474,8 @@ if (source) {
   }, renderResponse)
 }
 else {
-  dom('#loading').style({'display': 'none'})
-  dom('#how-to').removeClass('hide')
+  dom('#loading').addClass('hidden')
+  dom('#how-to').removeClass('hidden')
 }
 
 function renderResponse (err, resp, body) {
@@ -3498,11 +3498,20 @@ function renderResponse (err, resp, body) {
 }
 
 dom('.container.controls button.toggle-stitches').on('click', toggleStitches)
+dom('body').on('click', '.stitch-mark .collapser', toggleCollapse)
 
 function toggleStitches(evt) {
   dom('.container.controls button.toggle-stitches').toggleClass('active')
   dom('.stitch-mark').toggleClass('visible')
+
+  dom('.stitch-mark .collapser').toggleClass('hidden')
 } 
+
+function toggleCollapse(evt) {
+  var sectionHandle = evt.target.parentNode.attributes['data-url'].value
+
+  dom('.stitch-mark[data-url="'+sectionHandle+'"] .content').toggleClass('hidden')
+}
 
 
 },{"../treeToHtml":52,"domquery":6,"url":5,"xhr":44}],52:[function(require,module,exports){
@@ -3518,7 +3527,7 @@ function treeToPlainHtml ( tree ) {
 
   function recurssiveStitch(tree) {
     tree.children.forEach( function(childTree) {
-      html = plainSubstitute( childTree.source, childTree.content, html )
+      html = plainSubstitute( childTree.url, childTree.content, html )
       recurssiveStitch( childTree ) 
     })
   }
@@ -3533,7 +3542,7 @@ function treeToPlainHtml ( tree ) {
   //if (tree.parent == null) html = tree.content
 
   //tree.children.forEach( function(childTree) {
-    //html = stitchSubstitute( childTree.source, childTree.content, html )
+    //html = stitchSubstitute( childTree.url, childTree.content, html )
     //treeToStitchedHtml( childTree ) 
   //})
   //return html
@@ -3545,7 +3554,7 @@ function treeToStitchedHtml ( tree ) {
 
   function recurssiveStitch(tree) {
     tree.children.forEach( function(childTree) {
-      html = stitchSubstitute( childTree.source, childTree.content, html )
+      html = stitchSubstitute( childTree, html )
       recurssiveStitch( childTree ) 
     })
   }
@@ -3558,9 +3567,13 @@ function plainSubstitute (url, importedText, wholeText) {
   return wholeText.replace(regex, importedText)
 }
 
-function stitchSubstitute (url, importedText, wholeText) {
-  var regex = new RegExp('\\+\<a href\=(\'|\")' + url + '.*\<\/a\>', 'g')
-  importedText = "<div class='stitch-mark'>" + importedText + "</div>"
+function stitchSubstitute (treeNode, wholeText) {
+  var regex = new RegExp('\\+\<a href\=(\'|\")' + treeNode.url + '.*\<\/a\>', 'g')
+  var importedText = "<div class='stitch-mark' data-url='" + treeNode.url + "'>" + 
+                        "<button class='collapser hidden'>+</button>" +
+                        "<div class='content expanded'>" + treeNode.content + "</div>" +
+                        "<div class='content collapsed hidden'>" + treeNode.label + "</div>" +
+                     "</div>"
   return wholeText.replace(regex, importedText)
 }
 

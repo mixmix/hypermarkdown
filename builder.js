@@ -3,8 +3,12 @@ var request = require('request');
 
 
 module.exports = function( url, callback ) {
-  var parentTree = Tree(url)
-  parentTree.depth = 0
+  var parentTree = Tree({
+    label: null,
+    url: url,
+    parent: null,
+    depth: 0,
+  })
 
   dig( parentTree, callback )
 }
@@ -20,33 +24,38 @@ if (!module.parent) {
   })
 }
 
-function Tree(url) { 
+function Tree( attrs ) {
   return {
-    parent:   null,
-    depth:    null,
-    source:   url,
+    label:    attrs['label'],
+    url:      attrs['url'],
+    parent:   attrs['parent'],
+    depth:    attrs['depth'],
     content:  null,
     children: null,
+  }
+}
+
+function treeWithParent( treeNode ) {
+  return function ( attrs ) {
+    attrs.parent = treeNode
+    attrs.detpth = treeNode.depth + 1
+
+    return Tree( attrs )
   }
 }
 
 function dig( treeNode, callback ) {
   if (isInfiniteLoop(treeNode)) return callback(null, treeNode)
 
-  console.log( Array(treeNode.depth*2).join(' ') + green('[Get] ') + treeNode.source)
-  request.get( make_raw(treeNode.source), function(err, response, body) {
+  //console.log( Array(treeNode.depth*2).join(' ') + green('[Get] ') + treeNode.url)
+  request.get( make_raw(treeNode.url), function(err, response, body) {
     if (err) {
-      console.error("there was an error getting: " + url)
+      console.error("there was an error getting: " + treeNode.url)
       return callback(err)
     }
 
     treeNode.content = body
-    treeNode.children = find_transclusion_urls(body).map( Tree )
-    // TODO move into Tree()
-    treeNode.children.forEach(function (childTree) {
-      childTree.parent = treeNode
-      childTree.depth  = treeNode.depth + 1
-    })
+    treeNode.children = findTransclusionLinks(body).map( treeWithParent(treeNode) )
 
     async.each( 
       treeNode.children,
@@ -61,10 +70,10 @@ function dig( treeNode, callback ) {
 function isInfiniteLoop( tree, url ) {
   if (tree.parent == null) return false
   if (url == null) {
-    return isInfiniteLoop( tree.parent, tree.source )
+    return isInfiniteLoop( tree.parent, tree.url )
   }
 
-  if (tree.source === url) return true
+  if (tree.url === url) return true
 
   return isInfiniteLoop ( tree.parent, url )
 }
@@ -78,22 +87,25 @@ function make_raw( url ) {
   return url
 }
 
-
-function find_transclusion_urls(text) {
+function findTransclusionLinks(text) {
+  //var link_pattern_matches = text.match(/\+  \[  [^\[\]]* \]     \(  ^\)]+ \)  /g)
   var link_pattern_matches = text.match(/\+\[[^\[\]]*\]\([^\)]+\)/g)
     
   if (link_pattern_matches) {
-    return link_pattern_matches.map(strip_to_url) 
+    return link_pattern_matches.map( seperateLabelAndLink ) 
   } else {
     return []
   }
 }
 
-function stripHyperMarkdownBadge(text) {
-  return text.replace('[![](https://github.com/mixmix/hypermarkdown/raw/master/hypermarkdown_badge.png)](https://hypermarkdown.herokuapp.com)', '')
+function seperateLabelAndLink(string) {
+  return {
+    label: string.replace(/^\+\[/, '').replace(/\].*$/, ''),
+    url:   string.replace(/^.*\(/, '').replace(/\).*$/, '')
+  }
 }
 
-function strip_to_url(string) {
-  return string.replace(/(.*\(|\).*)/g, '')
+function stripHyperMarkdownBadge(text) {
+  return text.replace('[![](https://github.com/mixmix/hypermarkdown/raw/master/hypermarkdown_badge.png)](https://hypermarkdown.herokuapp.com)', '')
 }
 

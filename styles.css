@@ -61,16 +61,24 @@ main {
   background-color: rgba(52, 233, 213, 0.39);
 }
 
+.stitch-mark .content.collapsed { 
+  display: inline-block;
+}
+.stitch-mark .content.collapsed.hidden{ 
+  display: none;
+}
+
 button { 
   border: none;
   border-radius: 2px;
+  margin-right: 10px;
 }
 
 button.active {
-  background: rgba(255, 0, 0, 0.4) none repeat scroll 0% 0%;
+  background: rgba(52, 233, 213, 0.39);
 }
 
-.hide { 
+.hide, .hidden { 
   display: none;
 }
 

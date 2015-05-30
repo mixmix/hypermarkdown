@@ -10,7 +10,7 @@ function treeToPlainHtml ( tree ) {
 
   function recurssiveStitch(tree) {
     tree.children.forEach( function(childTree) {
-      html = plainSubstitute( childTree.source, childTree.content, html )
+      html = plainSubstitute( childTree.url, childTree.content, html )
       recurssiveStitch( childTree ) 
     })
   }
@@ -25,7 +25,7 @@ function treeToPlainHtml ( tree ) {
   //if (tree.parent == null) html = tree.content
 
   //tree.children.forEach( function(childTree) {
-    //html = stitchSubstitute( childTree.source, childTree.content, html )
+    //html = stitchSubstitute( childTree.url, childTree.content, html )
     //treeToStitchedHtml( childTree ) 
   //})
   //return html
@@ -37,7 +37,7 @@ function treeToStitchedHtml ( tree ) {
 
   function recurssiveStitch(tree) {
     tree.children.forEach( function(childTree) {
-      html = stitchSubstitute( childTree.source, childTree.content, html )
+      html = stitchSubstitute( childTree, html )
       recurssiveStitch( childTree ) 
     })
   }
@@ -50,8 +50,12 @@ function plainSubstitute (url, importedText, wholeText) {
   return wholeText.replace(regex, importedText)
 }
 
-function stitchSubstitute (url, importedText, wholeText) {
-  var regex = new RegExp('\\+\<a href\=(\'|\")' + url + '.*\<\/a\>', 'g')
-  importedText = "<div class='stitch-mark'>" + importedText + "</div>"
+function stitchSubstitute (treeNode, wholeText) {
+  var regex = new RegExp('\\+\<a href\=(\'|\")' + treeNode.url + '.*\<\/a\>', 'g')
+  var importedText = "<div class='stitch-mark' data-url='" + treeNode.url + "'>" + 
+                        "<button class='collapser hidden'>+</button>" +
+                        "<div class='content expanded'>" + treeNode.content + "</div>" +
+                        "<div class='content collapsed hidden'>" + treeNode.label + "</div>" +
+                     "</div>"
   return wholeText.replace(regex, importedText)
 }
