@@ -3,7 +3,7 @@ body {
   background: rgb(243, 243, 243);
 }
 
-h1, .source-link, #loading, #how-to {
+h1, .source-link, #loading, #how-to, .container.controls, .container.dependencies {
   font-family: "opensans-light","opensans",sans-serif;
   font-weight: 300;
 }
@@ -11,6 +11,10 @@ h1, .source-link, #loading, #how-to {
 h1 { 
   font-size: 50px;
   padding: 40px 0 10px;
+}
+
+a { 
+  color: #363434
 }
 
 .source-link {
@@ -48,11 +52,23 @@ main {
   padding-top: 10px;
 }
 
+.container.controls button { 
+  /*float: right;*/
+}
 
 .container.target {
   min-height: 1000px;
   margin-bottom: 30px;
   padding-bottom: 60px;
+}
+
+.container.dependencies { 
+  padding-bottom: 20px;
+  margin-bottom: 40px;
+}
+
+.container.dependencies pre {
+  font-size: 14px;
 }
 
 .stitch-mark.visible {

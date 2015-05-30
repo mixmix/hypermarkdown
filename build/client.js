@@ -3493,13 +3493,13 @@ module.exports = function (headers) {
 var url   = require('url')
 var xhr   = require('xhr')
 var dom   = require('domquery')
-var archy = require('archy')
 
 var treeToHtml = require('../treeToHtml')
+var treeToDependencies = require('../treeToDependencies')
 
 var requestDetails = url.parse(window.location.href, true)
 var source = requestDetails.query.source
-var mode = requestDetails.query.style
+var mode   = requestDetails.query.style
 
 var mdRegex = new RegExp(/\.h?md(\#[-_\w]*)?/)
 
@@ -3534,8 +3534,7 @@ function renderResponse (err, resp, body) {
 
   dom('.container.target').replace('#loading', "<div class='markdown-body'>{insert}</div>", {insert: insertContent} )
 
-  var dependencyTree = archy(treeToDependencies(results), '  ', {'unicode': false})
-  dom('.container.dependencies').add( "<div class='markdown-body'><pre>{insert}</pre></div>", {insert: dependencyTree} )
+  dom('.container.dependencies').add( "<pre>{insert}</pre>", {insert: treeToDependencies(results)} )
   dom('.container.dependencies').toggleClass('hidden')
 }
 
@@ -3556,13 +3555,22 @@ function toggleCollapse(evt) {
 }
 
 
+
+},{"../treeToDependencies":53,"../treeToHtml":54,"domquery":7,"url":6,"xhr":45}],53:[function(require,module,exports){
+var archy = require('archy')
+
+module.exports = treeToDependencies
+
 function treeToDependencies( tree ) {
+  return archy(treeToArchyTree(tree), '', {'unicode': false})
+}
+
+function treeToArchyTree(tree) {
   var newTree = {}
-  //var newTree = newTree || {}
 
   function recurssiveArchyFormat(tree, newTree) {
-    newTree.label = tree.label
-    if (tree.parent == null) { newTree.label = 'this file' }
+    newTree.label = "<a href ='"+ tree.url + "'>" + tree.label + "</a>"
+    if (tree.parent == null) { newTree.label = "<a href ='"+ tree.url + "'>This file</a>" }
     newTree.nodes = []
 
     tree.children.forEach( function(childTree, index) {
@@ -3578,7 +3586,7 @@ function treeToDependencies( tree ) {
 }
 
 
-},{"../treeToHtml":53,"archy":1,"domquery":7,"url":6,"xhr":45}],53:[function(require,module,exports){
+},{"archy":1}],54:[function(require,module,exports){
 
 module.exports = {
   plain: treeToPlainHtml,

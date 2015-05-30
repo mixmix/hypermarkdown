@@ -1,6 +1,5 @@
 var async = require('async')
-var request = require('request');
-
+var request = require('request')
 
 module.exports = function( url, callback ) {
   var parentTree = Tree({
@@ -54,7 +53,7 @@ function dig( treeNode, callback ) {
       return callback(err)
     }
 
-    treeNode.content = body
+    treeNode.content = stripHyperMarkdownBadge(body)
     treeNode.children = findTransclusionLinks(body).map( treeWithParent(treeNode) )
 
     async.each( 
