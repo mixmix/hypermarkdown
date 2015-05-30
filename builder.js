@@ -38,7 +38,7 @@ function Tree( attrs ) {
 function treeWithParent( treeNode ) {
   return function ( attrs ) {
     attrs.parent = treeNode
-    attrs.detpth = treeNode.depth + 1
+    attrs.depth = treeNode.depth + 1
 
     return Tree( attrs )
   }
@@ -47,7 +47,7 @@ function treeWithParent( treeNode ) {
 function dig( treeNode, callback ) {
   if (isInfiniteLoop(treeNode)) return callback(null, treeNode)
 
-  //console.log( Array(treeNode.depth*2).join(' ') + green('[Get] ') + treeNode.url)
+  console.log( Array(treeNode.depth*2).join(' ') + green('[Get] ') + treeNode.url)
   request.get( make_raw(treeNode.url), function(err, response, body) {
     if (err) {
       console.error("there was an error getting: " + treeNode.url)

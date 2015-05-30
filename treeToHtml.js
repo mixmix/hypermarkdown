@@ -45,6 +45,7 @@ function treeToStitchedHtml ( tree ) {
   recurssiveStitch(tree)
   return html
 }
+
 function plainSubstitute (url, importedText, wholeText) {
   var regex = new RegExp('\\+\<a href\=(\'|\")' + url + '.*\<\/a\>', 'g')
   return wholeText.replace(regex, importedText)
