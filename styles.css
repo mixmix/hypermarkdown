@@ -52,8 +52,13 @@ main {
   padding-top: 10px;
 }
 
+.container.controls { 
+  position: relative;
+  padding: 0px 0px 20px 820px;
+}
+
 .container.controls button { 
-  /*float: right;*/
+  position: absolute;
 }
 
 .container.target {
@@ -69,7 +74,7 @@ main {
 
 .container.dependencies pre {
   font-size: 14px;
-  padding: 20px 0 20px 20px;
+  padding: 15px 0 20px 20px;
 }
 
 .stitch-mark.visible {
