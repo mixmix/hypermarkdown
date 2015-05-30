@@ -3486,17 +3486,23 @@ function renderResponse (err, resp, body) {
     console.log(body)
     var results = JSON.parse(body)
 
-    if (mode) {
-      console.log('yeah!')
-      var insertContent = treeToHtml.stitched(results)
+    if (mode == 'plain') {
+      var insertContent = treeToHtml.plain(results)
     }
     else {
-      var insertContent = treeToHtml.plain(results)
+      var insertContent = treeToHtml.stitched(results)
     }
   }
 
-  dom('body main .container.target').replace('#loading', "<div class='markdown-body'>{insert}</div>", {insert: insertContent} )
+  dom('.container.target').replace('#loading', "<div class='markdown-body'>{insert}</div>", {insert: insertContent} )
 }
+
+dom('.container.controls button.toggle-stitches').on('click', toggleStitches)
+
+function toggleStitches(evt) {
+  dom('.container.controls button.toggle-stitches').toggleClass('active')
+  dom('.stitch-mark').toggleClass('visible')
+} 
 
 
 },{"../treeToHtml":52,"domquery":6,"url":5,"xhr":44}],52:[function(require,module,exports){

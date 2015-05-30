@@ -55,10 +55,19 @@ main {
   padding-bottom: 60px;
 }
 
-.stitch-mark {
+.stitch-mark.visible {
   border: 1px lightgrey dashed;
   padding: 10px;
   background-color: rgba(52, 233, 213, 0.39);
+}
+
+button { 
+  border: none;
+  border-radius: 2px;
+}
+
+button.active {
+  background: rgba(255, 0, 0, 0.4) none repeat scroll 0% 0%;
 }
 
 .hide { 
