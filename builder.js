@@ -4,6 +4,7 @@ var request = require('request');
 
 module.exports = function( url, callback ) {
   var parentTree = Tree(url)
+  parentTree.depth = 0
 
   dig( parentTree, callback )
 }
@@ -22,6 +23,7 @@ if (!module.parent) {
 function Tree(url) { 
   return {
     parent:   null,
+    depth:    null,
     source:   url,
     content:  null,
     children: null,
@@ -31,7 +33,7 @@ function Tree(url) {
 function dig( treeNode, callback ) {
   if (isInfiniteLoop(treeNode)) return callback(null, treeNode)
 
-  console.log(green('[Get] ') + treeNode.source)
+  console.log( Array(treeNode.depth*2).join(' ') + green('[Get] ') + treeNode.source)
   request.get( make_raw(treeNode.source), function(err, response, body) {
     if (err) {
       console.error("there was an error getting: " + url)
@@ -43,6 +45,7 @@ function dig( treeNode, callback ) {
     // TODO move into Tree()
     treeNode.children.forEach(function (childTree) {
       childTree.parent = treeNode
+      childTree.depth  = treeNode.depth + 1
     })
 
     async.each( 
