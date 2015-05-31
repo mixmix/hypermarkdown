@@ -92,4 +92,13 @@ function startServer() {
   http.createServer( handler ).listen(port)
 }
 
+function keepAwake() {
+  console.log('POKE')
+  setInterval(function() {
+      http.get("http://hypermarkdown.herokuapp.com");
+  }, 300000); // every 5 minutes (300000)
+}
+
 startServer()
+keepAwake()
+
