@@ -10,6 +10,7 @@ var stringify = require('json-stringify-safe')
 
 var build = require('./builder')
 var renderTree = require('./renderTree')
+var fetchAuthors = require('./fetchAuthors')
 
 // testing: tape
 
@@ -57,6 +58,37 @@ function buildHypermarkdownTree(req, res, match) {
   }
 }
 
+router.addRoute('/api/authors', authorsResponse)
+function authorsResponse(req, res, match) {
+  var requestDetails = url.parse(req.url, true)
+  var source = requestDetails.query.source
+
+  if (source && source.match(mdRegex) && source.match(githubRegex)) {
+    var ownerAndRepo = source.match(/.*github.com\/([\w-_]+\/[\w-_]+)/)[1]
+    // this path assumes a lot about the source provided
+    var path = source.match(/.*github.com\/[\w-_]+\/[\w-_]+\/(.*\.md)/)[1].replace('blob/master/', '')
+
+    fetchAuthors(ownerAndRepo, {path: path}, function(err, users) {
+      if (err) { 
+        res.writeHead(400, {'content-type': 'text/plain'})
+        res.write("You've hit a bad url somewhere in there, we got the error:<br />"+ err)
+        res.end()
+        return
+      }
+
+      console.log(users)
+      res.writeHead(200, {'content-type': 'application/json'})
+
+      res.write( stringify(users, null, 2) )
+      res.end()
+    })
+  }
+  else {
+    res.writeHead(400, {'content-type': 'text/plain'})
+    res.write("error or no easy way to determine authors")
+    res.end()
+  }
+}
 
 
 function handler(req, res) {
@@ -65,6 +97,7 @@ function handler(req, res) {
   if (match) {
     match.fn(req, res, match)
   }
+  // static-resources:
   else if (req.url === '/app.js') {
     fs.createReadStream('./build/client.js').pipe(res)
   }
@@ -85,6 +118,7 @@ function make_raw( url ) {
 }
 
 var mdRegex = new RegExp(/\.h?md(\#[-_\w]*)?/)
+var githubRegex = new RegExp(/github\.com/)
 
 
 function startServer() {
