@@ -19,7 +19,7 @@ function rootRequestResponse(req, res, match) {
   var referer = req.headers.referer || ''
   //linked from an md file?
   if (referer.match(mdRegex)) {
-    res.writeHead(302, {'Location': 'http://hypermarkdown.herokuapp.com/?source=' + referer, })
+    res.writeHead(302, {'Location': 'http://hyper.mixmix.io/?source=' + referer, })
     res.end()
   } 
   else {
@@ -130,7 +130,7 @@ function keepAwake() {
   setInterval(
     function() {
       console.log('POKE')
-      http.get("http://hypermarkdown.herokuapp.com");
+      http.get("http://hyper.mixmix.io");
     }, 
     300000 // every 5 minutes (300000)
   ) 

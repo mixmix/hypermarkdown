@@ -105,6 +105,7 @@ function seperateLabelAndLink(string) {
 }
 
 function stripHyperMarkdownBadge(text) {
-  return text.replace('[![](https://github.com/mixmix/hypermarkdown/raw/master/hypermarkdown_badge.png)](https://hypermarkdown.herokuapp.com)', '')
+  return text.replace('[![](https://github.com/mixmix/hypermarkdown/raw/master/hypermarkdown_badge.png)](http://hyper.mixmix.io)', '').
+              replace('[![](https://github.com/mixmix/hypermarkdown/raw/master/hypermarkdown_badge.png)](https://hypermarkdown.herokuapp.com)', '')
 }
 
