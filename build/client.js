@@ -3551,6 +3551,7 @@ function toggleStitches(evt) {
 function toggleCollapse(evt) {
   var sectionHandle = evt.target.parentNode.attributes['data-url'].value
 
+  dom('.stitch-mark[data-url="'+sectionHandle+'"] .collapser').toggleClass('has-plus')
   dom('.stitch-mark[data-url="'+sectionHandle+'"] .content').toggleClass('hidden')
 }
 
@@ -3643,7 +3644,7 @@ function plainSubstitute (url, importedText, wholeText) {
 function stitchSubstitute (treeNode, wholeText) {
   var regex = new RegExp('\\+\<a href\=(\'|\")' + treeNode.url + '.*\<\/a\>', 'g')
   var importedText = "<div class='stitch-mark visible' data-url='" + treeNode.url + "'>" + 
-                        "<button class='collapser'>+</button>" +
+                        "<button class='collapser has-plus'></button>" +
                         "<div class='content expanded'>" + treeNode.content + "</div>" +
                         "<div class='content collapsed hidden'>" + treeNode.label + "</div>" +
                      "</div>"

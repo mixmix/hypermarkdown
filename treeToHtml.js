@@ -54,7 +54,7 @@ function plainSubstitute (url, importedText, wholeText) {
 function stitchSubstitute (treeNode, wholeText) {
   var regex = new RegExp('\\+\<a href\=(\'|\")' + treeNode.url + '.*\<\/a\>', 'g')
   var importedText = "<div class='stitch-mark visible' data-url='" + treeNode.url + "'>" + 
-                        "<button class='collapser'>+</button>" +
+                        "<button class='collapser has-plus'></button>" +
                         "<div class='content expanded'>" + treeNode.content + "</div>" +
                         "<div class='content collapsed hidden'>" + treeNode.label + "</div>" +
                      "</div>"

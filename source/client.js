@@ -59,6 +59,7 @@ function toggleStitches(evt) {
 function toggleCollapse(evt) {
   var sectionHandle = evt.target.parentNode.attributes['data-url'].value
 
+  dom('.stitch-mark[data-url="'+sectionHandle+'"] .collapser').toggleClass('has-plus')
   dom('.stitch-mark[data-url="'+sectionHandle+'"] .content').toggleClass('hidden')
 }
 
