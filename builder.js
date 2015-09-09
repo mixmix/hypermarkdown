@@ -1,5 +1,6 @@
 var async = require('async')
 var request = require('request')
+var path = require('path')
 
 module.exports = function( url, callback ) {
   var parentTree = Tree({
@@ -46,15 +47,19 @@ function treeWithParent( treeNode ) {
 function dig( treeNode, callback ) {
   if (isInfiniteLoop(treeNode)) return callback(null, treeNode)
 
-  console.log( Array(treeNode.depth*2).join(' ') + green('[Get] ') + treeNode.url)
-  request.get( make_raw(treeNode.url), function(err, response, body) {
+  var getUrl = makeRaw(treeNode.url)
+  console.log( Array(treeNode.depth*2).join(' ') + green('[Get] ') + getUrl)
+
+  request.get( getUrl, function(err, response, body) {
     if (err) {
       console.error("there was an error getting: " + treeNode.url)
       return callback(err)
     }
 
     treeNode.content = stripHyperMarkdownBadge(body)
-    treeNode.children = findTransclusionLinks(body).map( treeWithParent(treeNode) )
+    expandTransclusionLinks(treeNode)
+
+    treeNode.children = findTransclusionLinks(treeNode.content).map( treeWithParent(treeNode) )
 
     async.each( 
       treeNode.children,
@@ -79,11 +84,31 @@ function isInfiniteLoop( tree, url ) {
 
 function green(string) { return ("\033[32m"+ string +"\033[0m") }
 
-function make_raw( url ) {
+function makeRaw( url ) {
   if (url.match(/github\.com/)) {
     url = url.replace(/\/blob\//, '/raw/')
   }
   return url
+}
+
+function expandTransclusionLinks( treeNode ) {
+  var links = findTransclusionLinks( treeNode.content ).map( function(el) { return el.url } )
+
+  links.forEach(function(link) {
+    if ( !link.match(/^(http|www)/) ) {
+      var fixedLink = buildExplicitLink( treeNode, link )
+
+      var matcher = new RegExp( "\\+\\[([^\\]]*)]\\(" + link + "\\)", 'g' )
+      treeNode.content = treeNode.content.replace(matcher, "+[$1](" + fixedLink + ")")
+    }
+  })
+}
+
+function buildExplicitLink( treeNode, url ) {
+  var parentUrlDir = treeNode.url.replace(/\/[^\/]*$/,'')
+
+  return path.join(parentUrlDir, url)
+             .replace(/(^https?:\/)/,"$1/")
 }
 
 function findTransclusionLinks(text) {

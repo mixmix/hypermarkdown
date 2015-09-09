@@ -34,9 +34,7 @@ function buildHypermarkdownTree(req, res, match) {
   var source = requestDetails.query.source
 
   if (source && source.match(mdRegex) ) {
-    var target = make_raw(source)
-
-    build(target, function(err, tree) {
+    build(source, function(err, tree) {
       if (err) { 
         res.writeHead(400, {'content-type': 'text/plain'})
         res.write("You've hit a bad url somewhere in there, we got the error:<br />"+ err)
@@ -107,14 +105,6 @@ function handler(req, res) {
   else if (req.url === '/loading.gif') {
     fs.createReadStream('./loading.gif').pipe(res)
   }
-}
-
-function make_raw( url ) {
-  //return 'https://github.com/' + url.replace(/.*api\/render\/?\?source\=/, '').replace(/\/blob\//, '/raw/')
-  if (url.match(/github\.com/)) {
-    url = url.replace(/\/blob\//, '/raw/')
-  }
-  return url
 }
 
 var mdRegex = new RegExp(/\.h?md(\#[-_\w]*)?/)
