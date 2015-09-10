@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "bin/build",
-    "start": "node server.js",
-    "go": "npm run build && npm start",
+    "build": "browserify source/client.js -o build/client.js",
+    "watch": "watchify source/client.js -o build/client.js -v",
+    "start": "npm run watch & nodemon server.js",
     "deploy": "git push heroku master",
-    "prod": "NODE_ENV=production npm start"
+    "prod": "NODE_ENV=production node server.js"
   },
   "repository": {
     "type": "git",
