@@ -3524,8 +3524,6 @@ var requestDetails = url.parse(window.location.href, true)
 var source = requestDetails.query.source
 var mode   = requestDetails.query.style
 
-var mdRegex = new RegExp(/\.h?md(\#[-_\w]*)?/)
-
 if (source) {
   xhr({
     uri: '/api/render?source=' + source,

@@ -11,14 +11,14 @@ var stringify = require('json-stringify-safe')
 var build = require('./builder')
 var renderTree = require('./renderTree')
 var fetchAuthors = require('./fetchAuthors')
+var regexps = require('./regexps')
 
-// testing: tape
 
 router.addRoute('/', rootRequestResponse)
 function rootRequestResponse(req, res, match) {
   var referer = req.headers.referer || ''
   //linked from an md file?
-  if (referer.match(mdRegex)) {
+  if (referer.match( regexps.mdUrl )) {
     res.writeHead(302, {'Location': 'http://hyper.mixmix.io/?source=' + referer, })
     res.end()
   } 
@@ -33,7 +33,7 @@ function buildHypermarkdownTree(req, res, match) {
   var requestDetails = url.parse(req.url, true)
   var source = requestDetails.query.source
 
-  if (source && source.match(mdRegex) ) {
+  if (source && source.match( regexps.mdUrl ) ) {
     build(source, function(err, tree) {
       if (err) { 
         res.writeHead(400, {'content-type': 'text/plain'})
@@ -61,7 +61,7 @@ function authorsResponse(req, res, match) {
   var requestDetails = url.parse(req.url, true)
   var source = requestDetails.query.source
 
-  if (source && source.match(mdRegex) && source.match(githubRegex)) {
+  if (source && source.match( regexps.mdUrl ) && source.match( regexps.githublab )) {
     var ownerAndRepo = source.match(/.*github.com\/([\w-_]+\/[\w-_]+)/)[1]
     // this path assumes a lot about the source provided
     var path = source.match(/.*github.com\/[\w-_]+\/[\w-_]+\/(.*\.md)/)[1].replace('blob/master/', '')
@@ -107,8 +107,6 @@ function handler(req, res) {
   }
 }
 
-var mdRegex = new RegExp(/\.h?md(\#[-_\w]*)?/)
-var githubRegex = new RegExp(/github\.com/)
 
 
 function startServer() {

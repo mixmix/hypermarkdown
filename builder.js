@@ -1,6 +1,7 @@
 var async = require('async')
 var request = require('request')
 var path = require('path')
+var regexps = require('./regexps')
 
 module.exports = function( url, callback ) {
   var parentTree = Tree({
@@ -85,7 +86,7 @@ function isInfiniteLoop( tree, url ) {
 function green(string) { return ("\033[32m"+ string +"\033[0m") }
 
 function makeRaw( url ) {
-  if (url.match(/github\.com/)) {
+  if (url.match( regexps.githublab ) {
     url = url.replace(/\/blob\//, '/raw/')
   }
   return url

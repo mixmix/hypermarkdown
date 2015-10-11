@@ -1,6 +1,8 @@
 module.exports = {
-  'youtubeTransclusionAnchors': new RegExp( /\+\<a[^>]+(www.youtube.com[^<]+<\/a>)/g ),
-  'youtubeId':                  new RegExp( /v\=([a-zA-Z\d]+)[&'"]+/ ),
+  'mdUrl':                      /\.md(\#[\w-_]*)?/)
+  'githublab':                  /git(hub|lab).com/,
+  'youtubeTransclusionAnchors': /\+\<a[^>]+(www.youtube.com[^<]+<\/a>)/g,
+  'youtubeId':                  /v\=([a-zA-Z\d]+)[&'"]+/,
 
 }
 
