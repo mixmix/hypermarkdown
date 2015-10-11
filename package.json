@@ -4,7 +4,7 @@
   "description": "a markdown transcluder that accepts web addresses for .hmd / .md files",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node ./test/index.js | tap-spec",
     "build": "browserify source/client.js -o build/client.js",
     "watch": "watchify source/client.js -o build/client.js -v",
     "start": "npm run watch & nodemon server.js",
@@ -25,10 +25,15 @@
     "archy": "^1.0.0",
     "async": "^0.9.0",
     "browserify": "^9.0.8",
+    "clipboard": "^1.4.0",
     "domquery": "^1.2.0",
     "json-stringify-safe": "^5.0.1",
     "markdown-it": "^4.1.1",
     "request": "^2.55.0",
     "routes": "^2.0.0"
+  },
+  "devDependencies": {
+    "tap-spec": "^4.1.0",
+    "tape": "^4.2.1"
   }
 }
