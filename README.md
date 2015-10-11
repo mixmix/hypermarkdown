@@ -4,8 +4,10 @@ This is a dynamic mardkown transclusion server - it parses special inclusion syn
 
 parts of the project: 
 
-- builder.js, which accepts text, and a callback. It fetches md / hmd file from the web translcuding then hands the result to the callback
-- a server which you can point at an hmd file. It uses the builder to transclude and then render the markdown
+- `treeBuilder( markdownText, callback )` : reads text and recursively fetches markdown files that have been linked to in the `+[file name](url)` format. It stores the markdown (original and fetched) in a json tree, and passes this to the callback.
+- `treePartialRender( tree )` : renders the markdown partials of a built tree into html, and returns that tree.
+- `treeToHtml( tree )` : provides a couple of methods for rendering tree of html partials into a a single html string.
+- server : serves client static files, and provides and api which client-side code can request built and rendered trees of markdown.
 
 ## notation
 
@@ -15,4 +17,10 @@ e.g.
 ```
 +[example include](https://github.com/mixmix/example-course/blob/master/README.md)
 ```
+
+With normal markdown renderers this makes a link like this: 
+
++[example include](https://github.com/mixmix/example-course/blob/master/README.md)
+
+[See this same file rendered by hypermarkdown](https://hypermarkdown.herokuapp.com)
 

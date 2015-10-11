@@ -8,8 +8,8 @@ var fs = require('fs')
 var request = require('request')
 var stringify = require('json-stringify-safe') 
 
-var build = require('./builder')
-var renderTree = require('./renderTree')
+var treeBuild = require('./treeBuild')
+var treePartialRender = require('./treePartialRender')
 var fetchAuthors = require('./fetchAuthors')
 var regexps = require('./regexps')
 
@@ -34,7 +34,7 @@ function buildHypermarkdownTree(req, res, match) {
   var source = requestDetails.query.source
 
   if (source && source.match( regexps.mdUrl ) ) {
-    build(source, function(err, tree) {
+    treeBuild(source, function(err, tree) {
       if (err) { 
         res.writeHead(400, {'content-type': 'text/plain'})
         res.write("You've hit a bad url somewhere in there, we got the error:<br />"+ err)
@@ -44,8 +44,8 @@ function buildHypermarkdownTree(req, res, match) {
 
       res.writeHead(200, {'content-type': 'application/json'})
 
-      var renderedTree = renderTree(tree)
-      res.write( stringify(renderedTree, null, 2) )
+      tree = treePartialRender(tree)
+      res.write( stringify(tree, null, 2) )
       res.end()
     })
   }

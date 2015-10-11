@@ -11,19 +11,9 @@ module.exports = function( url, callback ) {
     depth: 0,
   })
 
-  dig( parentTree, callback )
+  expandTree( parentTree, callback )
 }
 
-if (!module.parent) {
-  var url = 'http://github.com/mixmix/example-course/blob/master/mix-recipe.md'
-
-  module.exports(url, function (err, results) {
-    if (err) { throw err }
-    var renderedTree = renderTreeContent(results)
-    console.log(renderedTree)
-    console.log(treeToHtml(renderedTree))
-  })
-}
 
 function Tree( attrs ) {
   return {
@@ -45,7 +35,7 @@ function treeWithParent( treeNode ) {
   }
 }
 
-function dig( treeNode, callback ) {
+function expandTree( treeNode, callback ) {
   if (isInfiniteLoop(treeNode)) return callback(null, treeNode)
 
   var getUrl = makeRaw(treeNode.url)
@@ -64,7 +54,7 @@ function dig( treeNode, callback ) {
 
     async.each( 
       treeNode.children,
-      dig,
+      expandTree,
       function (err) {
         callback(err, treeNode)
       }

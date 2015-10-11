@@ -1,10 +1,10 @@
 var Markdown = require('markdown-it')
 var md = new Markdown()
 
-module.exports = function renderTreeContent( tree ) {
+module.exports = function treePartialRender( tree ) {
   tree.content = md.render(tree.content)
   tree.children.forEach(function (childTree) {
-    renderTreeContent(childTree)
+    treePartialRender(childTree)
   })
   return tree
 }
