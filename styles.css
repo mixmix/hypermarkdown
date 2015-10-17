@@ -139,6 +139,10 @@ button::-moz-focus-inner {
   border: 0;
 }
 
+.youtube-embed {
+  text-align: center;
+}
+
 .hide, .hidden { 
   display: none;
 }
