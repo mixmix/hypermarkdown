@@ -1,5 +1,5 @@
 var test = require('tape')
-var youtubeAutoEmbed = require('../youtubeAutoEmbed.js')
+var youtubeAutoEmbed = require('../youtubeAutoEmbed')
 
 module.exports = function() {
   test('youtubeAutoEmbed', function(t) {
