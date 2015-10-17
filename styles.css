@@ -111,7 +111,7 @@ button.collapser.has-plus::after {
   /*box-shadow: 2px 3px 8px #D2D2D2;*/
   /*margin: 0px 8px;*/
   border: 1px dashed #D2D2D2;
-  box-shadow: inset 0px 0px 100px rgba(238, 239, 240, 0.48);
+  box-shadow: inset 0px 0px 30px rgba(238, 239, 240, 0.48);
   margin: 0px;
   padding: 10px;
   /*position: relative;*/
