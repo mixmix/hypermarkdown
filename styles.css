@@ -1,6 +1,6 @@
 body {
   color: #37362F;
-  background: rgb(243, 243, 243);
+  background: #EEEFF0 url("http://subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/contemporary_china.png") repeat fixed 0% 0%;
 }
 
 h1, .source-link, #loading, #how-to, .container.controls, .container.dependencies {
@@ -58,7 +58,7 @@ main {
 .container {
   background: #ffffff;
   padding: 0 20px;
-  margin: 0 20px;
+  margin: 0;
   padding-top: 10px;
 }
 
@@ -69,6 +69,19 @@ main {
 
 .container.controls button { 
   position: absolute;
+}
+
+button.collapser {
+  background-color: #B0F6EF;
+  float: right;
+  width: 16px;
+  padding: 0px;
+  margin-top: 4px;
+  /*position: absolute;*/
+  /*left: -8px;*/
+  /*top:12px;*/
+  z-index: 999;
+  position: relative;
 }
 
 button.collapser::after { 
@@ -95,13 +108,18 @@ button.collapser.has-plus::after {
 }
 
 .stitch-mark.visible {
-  border: 1px lightgrey dashed;
+  /*box-shadow: 2px 3px 8px #D2D2D2;*/
+  /*margin: 0px 8px;*/
+  border: 1px dashed #D2D2D2;
+  box-shadow: inset 0px 0px 100px rgba(238, 239, 240, 0.48);
+  margin: 0px;
   padding: 10px;
-  background-color: rgba(52, 233, 213, 0.39);
+  /*position: relative;*/
 }
 
 .stitch-mark .content.collapsed { 
   display: inline-block;
+  margin-left: 8px;
 }
 .stitch-mark .content.collapsed.hidden{ 
   display: none;
@@ -136,7 +154,7 @@ button::-moz-focus-inner {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   color: #333;
-  overflow: hidden;
+  /*overflow: hidden;*/
   font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif;
   font-size: 16px;
   line-height: 1.6;

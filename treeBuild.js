@@ -76,7 +76,7 @@ function isInfiniteLoop( tree, url ) {
 function green(string) { return ("\033[32m"+ string +"\033[0m") }
 
 function makeRaw( url ) {
-  if (url.match( regexps.githublab ) {
+  if (url.match( regexps.githublab )) {
     url = url.replace(/\/blob\//, '/raw/')
   }
   return url
