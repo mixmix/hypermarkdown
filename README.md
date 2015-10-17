@@ -22,5 +22,5 @@ With normal markdown renderers this makes a link like this:
 
 +[example include](https://github.com/mixmix/example-course/blob/master/README.md)
 
-[See this same file rendered by hypermarkdown](https://hypermarkdown.herokuapp.com)
+[See a rendered example here](https://hypermarkdown.herokuapp.com/?source=https://github.com/mixmix/cultural_modules/blob/master/recipes/small_group_process.md)
 
