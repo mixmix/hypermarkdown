@@ -3513,6 +3513,16 @@ module.exports = function (headers) {
   return result
 }
 },{"for-each":48,"trim":50}],52:[function(require,module,exports){
+module.exports = {
+  'mdUrl':                      /\.md(\#[\w-_]*)?/,
+  'githublab':                  /git(hub|lab).com/,
+  'youtubeTransclusionAnchors': /\+\<a[^>]+(www.youtube.com[^<]+<\/a>)/g,
+  'youtubeId':                  /v\=([a-zA-Z\d_]+)[&'"]+/,
+
+}
+
+
+},{}],53:[function(require,module,exports){
 var url   = require('url')
 var xhr   = require('xhr')
 var dom   = require('domquery')
@@ -3578,7 +3588,7 @@ function toggleCollapse(evt) {
 
 
 
-},{"../treeToDependencies":53,"../treeToHtml":54,"domquery":2,"url":44,"xhr":45}],53:[function(require,module,exports){
+},{"../treeToDependencies":54,"../treeToHtml":55,"domquery":2,"url":44,"xhr":45}],54:[function(require,module,exports){
 var archy = require('archy')
 
 module.exports = treeToDependencies
@@ -3608,7 +3618,8 @@ function treeToArchyTree(tree) {
 }
 
 
-},{"archy":1}],54:[function(require,module,exports){
+},{"archy":1}],55:[function(require,module,exports){
+var youtubeAutoEmbed = require('./youtubeAutoEmbed')
 
 module.exports = {
   plain: treeToPlainHtml,
@@ -3627,6 +3638,7 @@ function treeToPlainHtml ( tree ) {
   }
 
   recurssiveStitch(tree)
+  html = youtubeAutoEmbed(html)
   return html
 }
 
@@ -3654,6 +3666,7 @@ function treeToStitchedHtml ( tree ) {
   }
 
   recurssiveStitch(tree)
+  html = youtubeAutoEmbed(html)
   return html
 }
 
@@ -3673,4 +3686,26 @@ function stitchSubstitute (treeNode, wholeText) {
 }
 
 
-},{}]},{},[52]);
+},{"./youtubeAutoEmbed":56}],56:[function(require,module,exports){
+var regexps = require('./regexps')
+
+module.exports = function youtubeAutoEmbed(string) {
+  var matches = string.match( regexps.youtubeTransclusionAnchors ) 
+  if (matches) {
+    matches.forEach( function(match) {
+      string = string.replace( match, convertAnchorToEmbed(match) )
+    })
+  }
+
+  return string
+}
+
+
+function convertAnchorToEmbed( string ) {
+  var youtubeID = string.match( regexps.youtubeId )[1]
+
+  return '<div class="youtube-embed"><iframe width="853" height="480" src="https://www.youtube.com/embed/' + youtubeID + '?rel=0" frameborder="0" allowfullscreen></iframe></div>'
+}
+
+
+},{"./regexps":52}]},{},[53]);

@@ -1,3 +1,4 @@
+var youtubeAutoEmbed = require('./youtubeAutoEmbed')
 
 module.exports = {
   plain: treeToPlainHtml,
@@ -16,6 +17,7 @@ function treeToPlainHtml ( tree ) {
   }
 
   recurssiveStitch(tree)
+  html = youtubeAutoEmbed(html)
   return html
 }
 
@@ -43,6 +45,7 @@ function treeToStitchedHtml ( tree ) {
   }
 
   recurssiveStitch(tree)
+  html = youtubeAutoEmbed(html)
   return html
 }
 

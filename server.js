@@ -1,4 +1,5 @@
 var isProd = process.env.NODE_ENV === 'production'
+var canonicalHost = process.env.CANONICAL_HOST || "http://hyper.mixmix.io"
 
 var Router = require('routes')
 var router = Router()
@@ -92,6 +93,7 @@ function authorsResponse(req, res, match) {
 function handler(req, res) {
   var requestDetails = url.parse(req.url, true)
   var match = router.match(requestDetails.pathname)
+
   if (match) {
     match.fn(req, res, match)
   }
@@ -104,6 +106,11 @@ function handler(req, res) {
   }
   else if (req.url === '/loading.gif') {
     fs.createReadStream('./loading.gif').pipe(res)
+  }
+  else if (requestDetails.path.match( regexps.mdUrl )) {
+    // redirects shortened urls
+    res.writeHead(302, {'Location': canonicalHost + '/?source=https://www.github.com' + requestDetails.path, })
+    res.end()
   }
 }
 
@@ -118,7 +125,7 @@ function keepAwake() {
   setInterval(
     function() {
       console.log('POKE')
-      http.get("http://hyper.mixmix.io");
+      http.get(canonicalHost);
     }, 
     300000 // every 5 minutes (300000)
   ) 
