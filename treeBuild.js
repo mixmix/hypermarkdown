@@ -39,7 +39,9 @@ function expandTree( treeNode, callback ) {
   if (isInfiniteLoop(treeNode)) return callback(null, treeNode)
 
   var getUrl = makeRaw(treeNode.url)
-  console.log( Array(treeNode.depth*2).join(' ') + green('[Get] ') + getUrl)
+  if (process.env.NODE_ENV != 'testing') {
+    console.log( Array(treeNode.depth*2).join(' ') + green('[Get] ') + getUrl)
+  }
 
   request.get( getUrl, function(err, response, body) {
     if (err) {
@@ -103,8 +105,8 @@ function buildExplicitLink( treeNode, url ) {
 }
 
 function findTransclusionLinks(text) {
-  //var link_pattern_matches = text.match(/\+  \[  [^\[\]]* \]     \(  ^\)]+ \)  /g)
-  var link_pattern_matches = text.match(/\+\[[^\[\]]*\]\([^\)]+\)/g)
+  //var link_pattern_matches = text.match(/\+  \[  [^\[\]]* \]     \(  [^\)]+ \)  /g)
+  var link_pattern_matches =   text.match(/\+\[[^\[\]]*\]\([^\)]+\)/g)
     
   if (link_pattern_matches) {
     return link_pattern_matches.map( seperateLabelAndLink ) 

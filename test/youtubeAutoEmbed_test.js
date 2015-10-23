@@ -15,11 +15,10 @@ module.exports = function() {
     )
     t.equal(
       youtubeAutoEmbed('link +<a href="https://www.youtube.com/watch?v=ZnuwB35GYMY">test</a>'),
-      'link <iframe width="853" height="480" src="https://www.youtube.com/embed/ZnuwB35GYMY?rel=0" frameborder="0" allowfullscreen></iframe>',
+      'link <div class="youtube-embed"><iframe width="853" height="480" src="https://www.youtube.com/embed/ZnuwB35GYMY?rel=0" frameborder="0" allowfullscreen></iframe></div>',
       'replaces youtube links with embedded videos'
     )
    
-
     t.end()
   })
 }
