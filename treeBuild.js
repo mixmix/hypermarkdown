@@ -51,6 +51,7 @@ function expandTree( treeNode, callback ) {
 
     treeNode.content = stripHyperMarkdownBadge(body)
     expandTransclusionLinks(treeNode)
+    expandImageLinks(treeNode)
 
     treeNode.children = findTransclusionLinks(treeNode.content).map( treeWithParent(treeNode) )
 
@@ -97,6 +98,22 @@ function expandTransclusionLinks( treeNode ) {
   })
 }
 
+function expandImageLinks( treeNode ) {
+  var links = findImageLinks( treeNode.content ).map( function(el) { return el.url } )
+
+  links.forEach(function(link) {
+    if ( !link.match(/^(http|www)/) ) {
+      var fixedLink = buildExplicitLink( treeNode, link )
+      if ( fixedLink.match(/blob\/master/) ) {
+        fixedLink = fixedLink + "?raw=true"
+      }
+
+      var matcher = new RegExp( "\\!\\[([^\\]]*)]\\(" + link + "\\)", 'g' )
+      treeNode.content = treeNode.content.replace(matcher, "![$1](" + fixedLink + ")")
+    }
+  })
+}
+
 function buildExplicitLink( treeNode, url ) {
   var parentUrlDir = treeNode.url.replace(/\/[^\/]*$/,'')
 
@@ -107,6 +124,17 @@ function buildExplicitLink( treeNode, url ) {
 function findTransclusionLinks(text) {
   //var link_pattern_matches = text.match(/\+  \[  [^\[\]]* \]     \(  [^\)]+ \)  /g)
   var link_pattern_matches =   text.match(/\+\[[^\[\]]*\]\([^\)]+\)/g)
+    
+  if (link_pattern_matches) {
+    return link_pattern_matches.map( seperateLabelAndLink ) 
+  } else {
+    return []
+  }
+}
+
+function findImageLinks(text) {
+  //var link_pattern_matches = text.match(/\!  \[  [^\[\]]* \]     \(  ^\)]+ \)  /g)
+  var link_pattern_matches = text.match(/\!\[[^\[\]]*\]\([^\)]+\)/g)
     
   if (link_pattern_matches) {
     return link_pattern_matches.map( seperateLabelAndLink ) 
