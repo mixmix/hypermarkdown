@@ -50,7 +50,6 @@ function expandTree( treeNode, callback ) {
     treeNode.content = stripHyperMarkdownBadge(body)
     expandTransclusionLinks(treeNode)
     expandImageLinks(treeNode)
-    console.log(treeNode)
 
     treeNode.children = findTransclusionLinks(treeNode.content).map( treeWithParent(treeNode) )
 
