@@ -3565,6 +3565,7 @@ function renderResponse (err, resp, body) {
 
   dom('.container.target').replace('#loading', "<div class='markdown-body'>{insert}</div>", {insert: insertContent} )
 
+  dom('.container.header').toggleClass('hidden')
   dom('.container.dependencies').add( "<pre>{insert}</pre>", {insert: treeToDependencies(results)} )
   dom('.container.dependencies').toggleClass('hidden')
 }
