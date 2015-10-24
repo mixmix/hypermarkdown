@@ -32,21 +32,21 @@ module.exports = function() {
     
     treeBuild(mockDomain + plain.path, function(err, res) {
       if (err) throw err
-      t.deepEqual( res['children'], [], 'it builds a tree one level deep when there are no transclusion links')
+      t.deepEqual( res['children'], [], 'no transclusion links > it builds a tree one level deep')
     })
 
     treeBuild(mockDomain + transclude.path, function(err, res) {
       if (err) throw err
-      t.notDeepEqual( res['children'], [], 'it is only 2 levels deep (when there is one explicit transclusion)')
-      t.deepEqual( res['children'][0]['content'], transcludeTarget.content, 'it loads explicitly transcluded branch text')
-      t.deepEqual( res['children'][0]['url'], mockDomain + transcludeTarget.path, 'it loads explicitly transcluded branch url')
+      t.notDeepEqual( res['children'], [],                                        '1 explicit transclusion > it is only 2 levels deep')
+      t.deepEqual( res['children'][0]['content'], transcludeTarget.content,       '1 explicit transclusion > it loads branch text')
+      t.deepEqual( res['children'][0]['url'], mockDomain + transcludeTarget.path, '1 explicit transclusion > it loads branch url')
     })
 
     treeBuild(mockDomain + refTransclude.path, function(err, res) {
       if (err) throw err
-      t.notDeepEqual( res['children'], [], 'it is only 2 levels deep (when there is one implicit transclusion)')
-      t.deepEqual( res['children'][0]['content'], transcludeTarget.content, 'it loads implicitly transcluded branch text')
-      t.deepEqual( res['children'][0]['url'], mockDomain + transcludeTarget.path, 'it loads implicitly transcluded branch url')
+      t.notDeepEqual( res['children'], [],                                        '1 reference transclusion > it is only 2 levels deep (when there is one implicit transclusion)')
+      t.deepEqual( res['children'][0]['content'], transcludeTarget.content,       '1 reference transclusion > it loads branch text')
+      t.deepEqual( res['children'][0]['url'], mockDomain + transcludeTarget.path, '1 reference transclusion > it loads branch url')
     })
 
     //scope.done()
