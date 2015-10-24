@@ -13,8 +13,8 @@ var transclude = {
 }
 var refTransclude = { 
   'path': '/reference_transclude.md', 
-  'content': 'and an transclusion which uses [implicit reference][targetPartialUrl] break' +
-               '[targetPartialUrl]: http://wwww.mock.com/_target.md'
+  'content': "and a transclusion which uses +[implicit reference][targetPartialUrl] break\n\n " +
+               "[targetPartialUrl]: http://wwww.mock.com/_target.md"
 }
 var transcludeTarget = {
  'path': '/_target.md',
@@ -28,9 +28,8 @@ module.exports = function() {
       .get(plain.path).reply(200, plain.content)
       .get(transclude.path).reply(200, transclude.content)
       .get(refTransclude.path).reply(200, refTransclude.content)
-      .get(transcludeTarget.path).reply(200, transcludeTarget.content)
+      .get(transcludeTarget.path).times(2).reply(200, transcludeTarget.content)
     
-
     treeBuild(mockDomain + plain.path, function(err, res) {
       if (err) throw err
       t.deepEqual( res['children'], [], 'it builds a tree one level deep when there are no transclusion links')
@@ -38,16 +37,16 @@ module.exports = function() {
 
     treeBuild(mockDomain + transclude.path, function(err, res) {
       if (err) throw err
-      t.notDeepEqual( res['children'], [], 'it is only 2 levels deep')
-      t.deepEqual( res['children'][0]['content'], transcludeTarget.content, 'it loads transcluded branch text')
-      t.deepEqual( res['children'][0]['url'], mockDomain + transcludeTarget.path, 'it loads transcluded branch url')
+      t.notDeepEqual( res['children'], [], 'it is only 2 levels deep (when there is one explicit transclusion)')
+      t.deepEqual( res['children'][0]['content'], transcludeTarget.content, 'it loads explicitly transcluded branch text')
+      t.deepEqual( res['children'][0]['url'], mockDomain + transcludeTarget.path, 'it loads explicitly transcluded branch url')
     })
 
     treeBuild(mockDomain + refTransclude.path, function(err, res) {
       if (err) throw err
-      t.notDeepEqual( res['children'], [], 'it is only 2 levels deep')
-      t.deepEqual( res['children'][0]['content'], transcludeTarget.content, 'it loads transcluded branch text')
-      t.deepEqual( res['children'][0]['url'], mockDomain + transcludeTarget.path, 'it loads transcluded branch url')
+      t.notDeepEqual( res['children'], [], 'it is only 2 levels deep (when there is one implicit transclusion)')
+      t.deepEqual( res['children'][0]['content'], transcludeTarget.content, 'it loads implicitly transcluded branch text')
+      t.deepEqual( res['children'][0]['url'], mockDomain + transcludeTarget.path, 'it loads implicitly transcluded branch url')
     })
 
     //scope.done()

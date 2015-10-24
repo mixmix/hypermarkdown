@@ -14,7 +14,6 @@ module.exports = function( url, callback ) {
   expandTree( parentTree, callback )
 }
 
-
 function Tree( attrs ) {
   return {
     label:    attrs['label'],
@@ -122,25 +121,42 @@ function buildExplicitLink( treeNode, url ) {
 }
 
 function findTransclusionLinks(text) {
+  text = replaceReferenceStyleTransclusions(text)
+  //console.log(text)
+
   //var link_pattern_matches = text.match(/\+  \[  [^\[\]]* \]     \(  [^\)]+ \)  /g)
-  var link_pattern_matches =   text.match(/\+\[[^\[\]]*\]\([^\)]+\)/g)
-    
-  if (link_pattern_matches) {
-    return link_pattern_matches.map( seperateLabelAndLink ) 
-  } else {
-    return []
-  }
+  var transclusionLinks = text.match(/\+\[[^\[\]]*\]\([^\)]+\)/g)
+  if (transclusionLinks == null) return []
+
+  return transclusionLinks.map( seperateLabelAndLink ) 
 }
 
 function findImageLinks(text) {
   //var link_pattern_matches = text.match(/\!  \[  [^\[\]]* \]     \(  ^\)]+ \)  /g)
-  var link_pattern_matches = text.match(/\!\[[^\[\]]*\]\([^\)]+\)/g)
+  var imageLinks = text.match(/\!\[[^\[\]]*\]\([^\)]+\)/g)
+  if (imageLinks == null) return []
+
+  return imageLinks.map( seperateLabelAndLink ) 
+}
+function replaceReferenceStyleTransclusions(string) {
+  var referenceTransclusions = string.match(/\+\[[^\[\]]*\]\[[^\]]+\]/g)
+  if (referenceTransclusions == null ) return string
+
+  referenceTransclusions.forEach( function(match) {
+    var referenceHandle = match.replace(/(.*\[|\])+/g, '')
+    var referenceUrlMatch = string.match( new RegExp( "\\[" + referenceHandle + "\\]:\\s*([^\\s]+)" ))
     
-  if (link_pattern_matches) {
-    return link_pattern_matches.map( seperateLabelAndLink ) 
-  } else {
-    return []
-  }
+    if (referenceUrlMatch) {
+      var referenceLabel = match.replace(/(\+\[|\].+)/g, '')
+      var standardTransclusion = match.replace( /\[[^\[]+\s*$/, "("+ referenceUrlMatch[1] + ")" )
+
+      var regex = new RegExp("\\+\\[" + referenceLabel + "\\]\\[" + referenceHandle + "\\]", 'g')
+
+      string = string.replace(new RegExp("\\+\\[" + referenceLabel + "\\]\\[" + referenceHandle + "\\]", 'g'), standardTransclusion)
+
+    }
+  })
+  return string
 }
 
 function seperateLabelAndLink(string) {
