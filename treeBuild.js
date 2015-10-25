@@ -5,10 +5,10 @@ var regexps = require('./regexps')
 
 module.exports = function( url, callback ) {
   var parentTree = Tree({
-    label: null,
-    url: url,
+    label:  null,
+    url:    url,
     parent: null,
-    depth: 0,
+    depth:  0,
   })
 
   expandTree( parentTree, callback )

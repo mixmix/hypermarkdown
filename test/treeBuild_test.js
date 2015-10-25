@@ -24,12 +24,17 @@ var transcludeTarget = {
 module.exports = function() {
   test('treeBuild', function(t) {
 
-    var scope = nock(mockDomain)
-      .get(plain.path).reply(200, plain.content)
-      .get(transclude.path).reply(200, transclude.content)
-      .get(refTransclude.path).reply(200, refTransclude.content)
-      .get(transcludeTarget.path).times(2).reply(200, transcludeTarget.content)
-    
+    var networkMocks = nock(mockDomain)
+      .get(plain.path)
+        .reply(200, plain.content)
+      .get(transclude.path)
+        .reply(200, transclude.content)
+      .get(refTransclude.path)
+        .reply(200, refTransclude.content)
+      .get(transcludeTarget.path)
+        .times(2).reply(200, transcludeTarget.content)
+
+
     treeBuild(mockDomain + plain.path, function(err, res) {
       if (err) throw err
       t.deepEqual( res['children'], [], 'no transclusion links > it builds a tree one level deep')
@@ -52,6 +57,10 @@ module.exports = function() {
     //scope.done()
     t.end()
   })
+
+
+
+
 }
 
 
