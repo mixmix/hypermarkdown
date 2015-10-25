@@ -2,19 +2,24 @@ var path = require('path')
 var findTransclusions = require('./findTransclusions')
 
 module.exports = function tidyMarkdown( treeNode ) {
-  treeNode.content = stripHyperMarkdownBadge( treeNode.content )
-  treeNode.content = replaceReferenceStyleTransclusions( treeNode.content )
-  absolutifyTransclusionLinks( treeNode )
-  absolutifyImageLinks( treeNode )
+  [
+    stripHyperMarkdownBadge,
+    replaceReferenceStyleTransclusions,
+    absolutifyTransclusionLinks,
+    absolutifyImageLinks
+  ]
+  .map( function(fn) { fn(treeNode) } )
 }
 
 
-function stripHyperMarkdownBadge(text) {
-  return text.replace('[![](https://github.com/mixmix/hypermarkdown/raw/master/hypermarkdown_badge.png)](http://hyper.mixmix.io)', '').
-              replace('[![](https://github.com/mixmix/hypermarkdown/raw/master/hypermarkdown_badge.png)](https://hypermarkdown.herokuapp.com)', '')
+function stripHyperMarkdownBadge( treeNode ) {
+  treeNode.content = treeNode.content.
+    replace('[![](https://github.com/mixmix/hypermarkdown/raw/master/hypermarkdown_badge.png)](http://hyper.mixmix.io)', '').
+    replace('[![](https://github.com/mixmix/hypermarkdown/raw/master/hypermarkdown_badge.png)](https://hypermarkdown.herokuapp.com)', '')
 }
 
-function replaceReferenceStyleTransclusions(string) {
+function replaceReferenceStyleTransclusions( treeNode ) {
+  string = treeNode.content
   var referenceTransclusions = string.match(/\+\[[^\[\]]*\]\[[^\]]+\]/g)
   if (referenceTransclusions == null ) return string
 
@@ -32,7 +37,7 @@ function replaceReferenceStyleTransclusions(string) {
 
     }
   })
-  return string
+  treeNode.content = string
 }
 
 function absolutifyTransclusionLinks( treeNode ) {
