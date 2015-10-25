@@ -1,6 +1,7 @@
 var async = require('async')
 var request = require('request')
-var path = require('path')
+var tidyMarkdown = require('./tidyMarkdown')
+var findTransclusions = require('./findTransclusions')
 var regexps = require('./regexps')
 
 module.exports = function( url, callback ) {
@@ -37,10 +38,7 @@ function treeWithParent( treeNode ) {
 function expandTree( treeNode, callback ) {
   if (isInfiniteLoop(treeNode)) return callback(null, treeNode)
 
-  var getUrl = makeRaw(treeNode.url)
-  if (process.env.NODE_ENV != 'testing') {
-    console.log( Array(treeNode.depth*2).join(' ') + green('[Get] ') + getUrl)
-  }
+  var getUrl = prepareUrl(treeNode)
 
   request.get( getUrl, function(err, response, body) {
     if (err) {
@@ -48,13 +46,11 @@ function expandTree( treeNode, callback ) {
       return callback(err)
     }
 
-    treeNode.content = stripHyperMarkdownBadge(body)
-    expandTransclusionLinks(treeNode)
-    expandImageLinks(treeNode)
+    treeNode.content  = body
+    tidyMarkdown( treeNode )
+    treeNode.children = findTransclusions.md(treeNode.content).map( treeWithParent(treeNode) )
 
-    treeNode.children = findTransclusionLinks(treeNode.content).map( treeWithParent(treeNode) )
-
-    async.each( 
+    async.each(
       treeNode.children,
       expandTree,
       function (err) {
@@ -75,6 +71,19 @@ function isInfiniteLoop( tree, url ) {
   return isInfiniteLoop ( tree.parent, url )
 }
 
+function prepareUrl( treeNode ) {
+  url = makeRaw(treeNode.url)
+
+  printGet( url, treeNode )
+  return url
+}
+
+function printGet( url, treeNode ) {
+  if (process.env.NODE_ENV != 'testing') {
+    console.log( Array(treeNode.depth*2).join(' ') + green('[Get] ') + url)
+  }
+}
+
 function green(string) { return ("\033[32m"+ string +"\033[0m") }
 
 function makeRaw( url ) {
@@ -84,90 +93,7 @@ function makeRaw( url ) {
   return url
 }
 
-function expandTransclusionLinks( treeNode ) {
-  var links = findTransclusionLinks( treeNode.content ).map( function(el) { return el.url } )
 
-  links.forEach(function(link) {
-    if ( !link.match(/^(http|www)/) ) {
-      var fixedLink = buildExplicitLink( treeNode, link )
 
-      var matcher = new RegExp( "\\+\\[([^\\]]*)]\\(" + link + "\\)", 'g' )
-      treeNode.content = treeNode.content.replace(matcher, "+[$1](" + fixedLink + ")")
-    }
-  })
-}
 
-function expandImageLinks( treeNode ) {
-  var links = findImageLinks( treeNode.content ).map( function(el) { return el.url } )
-
-  links.forEach(function(link) {
-    if ( !link.match(/^(http|www)/) ) {
-      var fixedLink = buildExplicitLink( treeNode, link )
-      if ( fixedLink.match(/blob\/master/) ) {
-        fixedLink = fixedLink + "?raw=true"
-      }
-
-      var matcher = new RegExp( "\\!\\[([^\\]]*)]\\(" + link + "\\)", 'g' )
-      treeNode.content = treeNode.content.replace(matcher, "![$1](" + fixedLink + ")")
-    }
-  })
-}
-
-function buildExplicitLink( treeNode, url ) {
-  var parentUrlDir = treeNode.url.replace(/\/[^\/]*$/,'')
-
-  return path.join(parentUrlDir, url)
-             .replace(/(^https?:\/)/,"$1/")
-}
-
-function findTransclusionLinks(text) {
-  text = replaceReferenceStyleTransclusions(text)
-  //console.log(text)
-
-  //var link_pattern_matches = text.match(/\+  \[  [^\[\]]* \]     \(  [^\)]+ \)  /g)
-  var transclusionLinks = text.match(/\+\[[^\[\]]*\]\([^\)]+\)/g)
-  if (transclusionLinks == null) return []
-
-  return transclusionLinks.map( seperateLabelAndLink ) 
-}
-
-function findImageLinks(text) {
-  //var link_pattern_matches = text.match(/\!  \[  [^\[\]]* \]     \(  ^\)]+ \)  /g)
-  var imageLinks = text.match(/\!\[[^\[\]]*\]\([^\)]+\)/g)
-  if (imageLinks == null) return []
-
-  return imageLinks.map( seperateLabelAndLink ) 
-}
-function replaceReferenceStyleTransclusions(string) {
-  var referenceTransclusions = string.match(/\+\[[^\[\]]*\]\[[^\]]+\]/g)
-  if (referenceTransclusions == null ) return string
-
-  referenceTransclusions.forEach( function(match) {
-    var referenceHandle = match.replace(/(.*\[|\])+/g, '')
-    var referenceUrlMatch = string.match( new RegExp( "\\[" + referenceHandle + "\\]:\\s*([^\\s]+)" ))
-    
-    if (referenceUrlMatch) {
-      var referenceLabel = match.replace(/(\+\[|\].+)/g, '')
-      var standardTransclusion = match.replace( /\[[^\[]+\s*$/, "("+ referenceUrlMatch[1] + ")" )
-
-      var regex = new RegExp("\\+\\[" + referenceLabel + "\\]\\[" + referenceHandle + "\\]", 'g')
-
-      string = string.replace(new RegExp("\\+\\[" + referenceLabel + "\\]\\[" + referenceHandle + "\\]", 'g'), standardTransclusion)
-
-    }
-  })
-  return string
-}
-
-function seperateLabelAndLink(string) {
-  return {
-    label: string.replace(/^\+\[/, '').replace(/\].*$/, ''),
-    url:   string.replace(/^.*\(/, '').replace(/\).*$/, '')
-  }
-}
-
-function stripHyperMarkdownBadge(text) {
-  return text.replace('[![](https://github.com/mixmix/hypermarkdown/raw/master/hypermarkdown_badge.png)](http://hyper.mixmix.io)', '').
-              replace('[![](https://github.com/mixmix/hypermarkdown/raw/master/hypermarkdown_badge.png)](https://hypermarkdown.herokuapp.com)', '')
-}
 
