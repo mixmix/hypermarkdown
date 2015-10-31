@@ -10,8 +10,13 @@ function treeToArchyTree(tree) {
   var newTree = {}
 
   function recurssiveArchyFormat(tree, newTree) {
-    newTree.label = "<a href ='"+ tree.url + "'>" + tree.label + "</a>"
-    if (tree.parent == null) { newTree.label = "<a href ='"+ tree.url + "'>This file</a>" }
+    var label = tree.parent == null ? tree.url.replace(/^.*\//,'') : tree.label
+
+    newTree.label =  "<a href ='"+tree.url+"'>"+label+"</a>"
+    newTree.label += "<button class='btn clipboard' data-clipboard-text='+["+label+"]("+tree.url+")'>"
+    newTree.label += "  <img class='clippy' src='images/clippy.svg' alt='Copy to clipboard' width='13'>"
+    newTree.label += "</button>"
+
     newTree.nodes = []
 
     tree.children.forEach( function(childTree, index) {

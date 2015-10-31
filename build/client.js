@@ -4,11 +4,11 @@ module.exports = function archy (obj, prefix, opts) {
     if (!opts) opts = {};
     var chr = function (s) {
         var chars = {
-            '│' : '|',
-            '└' : '`',
-            '├' : '+',
-            '─' : '-',
-            '┬' : '-'
+            '│' : '\u2502',
+            '└' : '\u2514',
+            '├' : '\u251C',
+            '─' : '\u2500',
+            '┬' : '\u252C'
         };
         return opts.unicode === false ? chars[s] : s;
     };
@@ -5370,7 +5370,7 @@ function renderResponse (err, resp, body) {
     var insertContent = body
   }
   else {
-    console.log(body)
+    //console.log(body)
     var results = JSON.parse(body)
 
     if (mode == 'plain') {
@@ -5384,7 +5384,9 @@ function renderResponse (err, resp, body) {
   dom('.container.target').replace('#loading', "<div class='markdown-body'>{insert}</div>", {insert: insertContent} )
 
   dom('.container.header').toggleClass('hidden')
-  dom('.container.dependencies').add( "<pre>{insert}</pre>", {insert: treeToDependencies(results)} )
+
+  dom('.container.dependencies .target').add( "<pre>{insert}</pre>", {insert: treeToDependencies(results).replace(/\n/g, '</pre><pre>')} )
+  new Clipboard('.btn.clipboard')
   dom('.container.dependencies').toggleClass('hidden')
 }
 
@@ -5420,8 +5422,13 @@ function treeToArchyTree(tree) {
   var newTree = {}
 
   function recurssiveArchyFormat(tree, newTree) {
-    newTree.label = "<a href ='"+ tree.url + "'>" + tree.label + "</a>"
-    if (tree.parent == null) { newTree.label = "<a href ='"+ tree.url + "'>This file</a>" }
+    var label = tree.parent == null ? tree.url.replace(/^.*\//,'') : tree.label
+
+    newTree.label =  "<a href ='"+tree.url+"'>"+label+"</a>"
+    newTree.label += "<button class='btn clipboard' data-clipboard-text='+["+label+"]("+tree.url+")'>"
+    newTree.label += "  <img class='clippy' src='images/clippy.svg' alt='Copy to clipboard' width='13'>"
+    newTree.label += "</button>"
+
     newTree.nodes = []
 
     tree.children.forEach( function(childTree, index) {

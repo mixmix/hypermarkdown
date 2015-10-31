@@ -27,7 +27,7 @@ function renderResponse (err, resp, body) {
     var insertContent = body
   }
   else {
-    console.log(body)
+    //console.log(body)
     var results = JSON.parse(body)
 
     if (mode == 'plain') {
@@ -41,7 +41,9 @@ function renderResponse (err, resp, body) {
   dom('.container.target').replace('#loading', "<div class='markdown-body'>{insert}</div>", {insert: insertContent} )
 
   dom('.container.header').toggleClass('hidden')
-  dom('.container.dependencies').add( "<pre>{insert}</pre>", {insert: treeToDependencies(results)} )
+
+  dom('.container.dependencies .target').add( "<pre>{insert}</pre>", {insert: treeToDependencies(results).replace(/\n/g, '</pre><pre>')} )
+  new Clipboard('.btn.clipboard')
   dom('.container.dependencies').toggleClass('hidden')
 }
 
