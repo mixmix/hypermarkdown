@@ -102,10 +102,20 @@ button.collapser.has-plus::after {
   margin-bottom: 40px;
 }
 
-.container.dependencies pre {
-  font-size: 14px;
+.container.dependencies .target {
   padding: 15px 0 20px 20px;
 }
+
+.container.dependencies .target pre {
+  font-size: 14px;
+  padding 0;
+  margin: 0;
+}
+
+.container.dependencies .target pre:hover button {
+  opacity: .5;
+}
+
 
 .stitch-mark.visible {
   /*box-shadow: 2px 3px 8px #D2D2D2;*/
@@ -131,6 +141,17 @@ button {
   margin-right: 10px;
 }
 
+button.btn.clipboard {
+  background-color: #fff;
+  opacity: 0;
+}
+
+
+.container.dependencies .target pre button.btn.clipboard:hover {
+  cursor: pointer;
+  opacity: 1;
+}
+
 button.active {
   background: rgba(52, 233, 213, 0.39);
 }
@@ -146,6 +167,9 @@ button::-moz-focus-inner {
 .hide, .hidden { 
   display: none;
 }
+
+
+
 
 
 /*markdown style from : https://github.com/jasonm23/markdown-css-themes/blob/gh-pages/markdown.css*/

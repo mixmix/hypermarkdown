@@ -57,37 +57,37 @@ function buildHypermarkdownTree(req, res, match) {
   }
 }
 
-router.addRoute('/api/authors', authorsResponse)
-function authorsResponse(req, res, match) {
-  var requestDetails = url.parse(req.url, true)
-  var source = requestDetails.query.source
+//router.addRoute('/api/authors', authorsResponse)
+//function authorsResponse(req, res, match) {
+  //var requestDetails = url.parse(req.url, true)
+  //var source = requestDetails.query.source
 
-  if (source && source.match( regexps.mdUrl ) && source.match( regexps.githublab )) {
-    var ownerAndRepo = source.match(/.*github.com\/([\w-_]+\/[\w-_]+)/)[1]
-    // this path assumes a lot about the source provided
-    var path = source.match(/.*github.com\/[\w-_]+\/[\w-_]+\/(.*\.md)/)[1].replace('blob/master/', '')
+  //if (source && source.match( regexps.mdUrl ) && source.match( regexps.githublab )) {
+    //var ownerAndRepo = source.match(/.*github.com\/([\w-_]+\/[\w-_]+)/)[1]
+    //// this path assumes a lot about the source provided
+    //var path = source.match(/.*github.com\/[\w-_]+\/[\w-_]+\/(.*\.md)/)[1].replace('blob/master/', '')
 
-    fetchAuthors(ownerAndRepo, {path: path}, function(err, users) {
-      if (err) { 
-        res.writeHead(400, {'content-type': 'text/plain'})
-        res.write("You've hit a bad url somewhere in there, we got the error:<br />"+ err)
-        res.end()
-        return
-      }
+    //fetchAuthors(ownerAndRepo, {path: path}, function(err, users) {
+      //if (err) { 
+        //res.writeHead(400, {'content-type': 'text/plain'})
+        //res.write("You've hit a bad url somewhere in there, we got the error:<br />"+ err)
+        //res.end()
+        //return
+      //}
 
-      console.log(users)
-      res.writeHead(200, {'content-type': 'application/json'})
+      //console.log(users)
+      //res.writeHead(200, {'content-type': 'application/json'})
 
-      res.write( stringify(users, null, 2) )
-      res.end()
-    })
-  }
-  else {
-    res.writeHead(400, {'content-type': 'text/plain'})
-    res.write("error or no easy way to determine authors")
-    res.end()
-  }
-}
+      //res.write( stringify(users, null, 2) )
+      //res.end()
+    //})
+  //}
+  //else {
+    //res.writeHead(400, {'content-type': 'text/plain'})
+    //res.write("error or no easy way to determine authors")
+    //res.end()
+  //}
+//}
 
 
 function handler(req, res) {
@@ -101,11 +101,17 @@ function handler(req, res) {
   else if (req.url === '/app.js') {
     fs.createReadStream('./build/client.js').pipe(res)
   }
+  else if (req.url === '/clipboard.min.js') {
+    fs.createReadStream('./node_modules/clipboard/dist/clipboard.min.js').pipe(res)
+  }
   else if (req.url === '/styles.css') {
     fs.createReadStream('./styles.css').pipe(res)
   }
-  else if (req.url === '/loading.gif') {
-    fs.createReadStream('./loading.gif').pipe(res)
+  else if (req.url === '/images/loading.gif') {
+    fs.createReadStream('./images/loading.gif').pipe(res)
+  }
+  else if (req.url === '/images/clippy.svg') {
+    fs.createReadStream('./images/clippy.svg').pipe(res)
   }
   else if (requestDetails.path.match( regexps.mdUrl )) {
     // redirects shortened urls
